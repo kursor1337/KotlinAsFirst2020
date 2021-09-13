@@ -92,8 +92,8 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double = TODO()
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
-    val x3: Double = x2 - x1
-    val y3: Double = y2 - y1
+    val x3 = x2 - x1
+    val y3 = y2 - y1
     return sqrt(sqr(x3) + sqr(y3))
 }
 
@@ -113,8 +113,8 @@ fun thirdDigit(number: Int): Int = TODO()
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
 fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
-    val allInMinutes1: Int = hoursDepart * 60 + minutesDepart
-    val allInMinutes2: Int = hoursArrive * 60 + minutesArrive
+    val allInMinutes1 = hoursDepart * 60 + minutesDepart
+    val allInMinutes2 = hoursArrive * 60 + minutesArrive
     return allInMinutes2 - allInMinutes1
 }
 
@@ -134,8 +134,8 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
 fun numberRevert(number: Int): Int {
-    val number1: Int = number % 10
-    val number2: Int = (number / 10) % 10
-    val number3: Int = number / 100
+    val number1 = number % 10
+    val number2 = (number / 10) % 10
+    val number3 = number / 100
     return (number1 * 100) + (number2 * 10) + number3
 }
