@@ -129,5 +129,5 @@ fun numberRevert(number: Int): Int {
     val firstDigit = number / 100
     val secondDigit = number % 100 / 10
     val thirdDigit = number % 10
-    return (thirdDigit.toString() + secondDigit.toString() + firstDigit.toString()).toInt()
+    return thirdDigit * 100 + secondDigit * 10 + firstDigit
 }
