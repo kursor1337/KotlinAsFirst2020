@@ -3,8 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.max
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
@@ -68,7 +67,12 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String = when {
+    age / 10 % 10 == 1 -> "$age лет"
+    age % 10 == 1 -> "$age год"
+    age % 10 < 5 -> "$age года"
+    else -> "$age лет"
+}
 
 /**
  * Простая (2 балла)
@@ -86,7 +90,7 @@ fun timeForHalfWay(
 /**
  * Простая (2 балла)
  *
- * Нa шахматной доске стоят черный король и две белые ладьи (ладья бьет по горизонтали и вертикали).
+ * На шахматной доске стоят черный король и две белые ладьи (ладья бьет по горизонтали и вертикали).
  * Определить, не находится ли король под боем, а если есть угроза, то от кого именно.
  * Вернуть 0, если угрозы нет, 1, если угроза только от первой ладьи, 2, если только от второй ладьи,
  * и 3, если угроза от обеих ладей.
@@ -122,7 +126,17 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val mx = maxOf(a, b, c)
+    val mn = minOf(a, b, c)
+    val ave = a + b + c - mx - mn
+    if (mx > ave + mn) return -1
+    // наибольший угол напротив наибольшей стороны
+    // косинус наибольшего угла
+    val cos = (ave * ave + mn * mn - mx * mx) / (2 * ave * mn)
+    return (-sign(cos) + 1).toInt()
+
+}
 
 /**
  * Средняя (3 балла)
@@ -132,4 +146,9 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    val m = maxOf(a, b, c, d)
+    val n = minOf(a, b, c, d)
+    if (m - n > b - a + d - c) return -1
+    else return (b - a) + (d - c) - (m - n)
+}
