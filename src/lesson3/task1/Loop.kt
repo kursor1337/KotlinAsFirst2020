@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.*
 
 // Урок 3: циклы
@@ -80,7 +81,10 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int =
+    if (n == 1 || n == 2) 1
+    else fib(n - 1) + fib(n - 2)
+
 
 /**
  * Простая (2 балла)
@@ -120,7 +124,15 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var gdc = 1
+    for (i in 2..min(m, n)) {
+        if (m % i == 0 && n % i == 0) {
+            gdc = i
+        }
+    }
+    return m * n / gdc
+}
 
 /**
  * Средняя (3 балла)
@@ -143,7 +155,21 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    val nums = ArrayList<Int>()
+    var k = n
+    while (k > 0) {
+        nums.add(k % 10)
+        k /= 10
+    }
+    k = 0
+    for (i in 0 until nums.size) {
+        k += nums[i] * 10.toDouble().pow(nums.size - i - 1).toInt()
+    }
+    return k
+
+}
+
 
 /**
  * Средняя (3 балла)
@@ -164,7 +190,16 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var k = n
+    val digit = k % 10
+    k /= 10
+    while (k > 0) {
+        if (digit != k % 10) return true
+        k /= 10
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -197,8 +232,22 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
-
+fun squareSequenceDigit(n: Int): Int {
+    var count = 0
+    var num = 1
+    while (count < n) {
+        val currentNum = sqr(num)
+        if (count + currentNum.length() < n) {
+            count += currentNum.length()
+            print("$count ")
+            num++
+            continue
+        }
+        val at = count + currentNum.length() - n
+        return currentNum.fromRightDigitAt(at)
+    }
+    return 0
+}
 /**
  * Сложная (5 баллов)
  *
@@ -208,4 +257,40 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var count = 0
+    var num = 1
+    while (count < n) {
+        val currentNum = fib(num)
+        if (count + currentNum.length() < n) {
+            count += currentNum.length()
+            print("$count ")
+            num++
+            continue
+        }
+        val at = count + currentNum.length() - n
+        return currentNum.fromRightDigitAt(at)
+    }
+    return 0
+}
+
+fun Int.fromRightDigitAt(n: Int): Int {
+    val nums = ArrayList<Int>()
+    var k = this
+    while (k > 0) {
+        nums.add(k % 10)
+        k /= 10
+    }
+    return nums[n]
+}
+
+fun Int.length(): Int {
+    var k = 0
+    var num = this
+    while (num > 0) {
+        k += 1
+        num /= 10
+    }
+
+    return k
+}
