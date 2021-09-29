@@ -83,11 +83,13 @@ fun digitNumber(n: Int): Int = TODO()
  */
 fun fib(n: Int): Int {
     if (n == 1 || n == 2) return 1
-    val nums = arrayListOf(1, 1)
+    val nums = mutableListOf(1, 1, 2)
     for (i in 2 until n) {
-        nums.add(nums[i - 2] + nums[i - 1])
+        nums[2] = nums[0] + nums[1]
+        nums[0] = nums[1]
+        nums[1] = nums[2]
     }
-    return nums[n - 1]
+    return nums[2]
 }
 
 
@@ -129,14 +131,18 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var gdc = 1
+fun lcm(m: Int, n: Int): Int = m * n / gdc(m, n)
+
+
+/**
+ * Функция находит НОД двух чисел
+ */
+fun gdc(m: Int, n: Int): Int {
+    var div = 1
     for (i in 2..min(m, n)) {
-        if (m % i == 0 && n % i == 0) {
-            gdc = i
-        }
+        if (m % i == 0 && n % i == 0) div = i
     }
-    return m * n / gdc
+    return div
 }
 
 /**
@@ -146,12 +152,7 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    for (i in 2..min(m, n)) {
-        if (m % i == 0 && n % i == 0) return false
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean = gdc(m, n) == 1
 
 /**
  * Средняя (3 балла)
@@ -161,17 +162,13 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun revert(n: Int): Int {
-    val nums = ArrayList<Int>()
-    var k = n
-    while (k > 0) {
-        nums.add(k % 10)
-        k /= 10
+    var num = n
+    var reversedNum = 0
+    while (num > 0) {
+        reversedNum = reversedNum * 10 + num % 10
+        num /= 10
     }
-    k = 0
-    for (i in 0 until nums.size) {
-        k += nums[i] * 10.toDouble().pow(nums.size - i - 1).toInt()
-    }
-    return k
+    return reversedNum
 
 }
 
@@ -244,7 +241,6 @@ fun squareSequenceDigit(n: Int): Int {
         val currentNum = sqr(num)
         if (count + currentNum.length() < n) {
             count += currentNum.length()
-            print("$count ")
             num++
             continue
         }
@@ -270,12 +266,11 @@ fun fibSequenceDigit(n: Int): Int {
         val currentNum = fib(num)
         if (count + currentNum.length() < n) {
             count += currentNum.length()
-            print("$count ")
             num++
             continue
         }
-        val at = count + currentNum.length() - n
-        return currentNum.fromRightDigitAt(at)
+        val index = count + currentNum.length() - n
+        return currentNum.fromRightDigitAt(index)
     }
     return 0
 }

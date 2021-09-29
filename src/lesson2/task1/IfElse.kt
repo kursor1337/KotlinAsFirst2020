@@ -127,13 +127,13 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val mx = maxOf(a, b, c)
-    val mn = minOf(a, b, c)
-    val ave = a + b + c - mx - mn
-    if (mx > ave + mn) return -1
+    val maxSide = maxOf(a, b, c)
+    val minSide = minOf(a, b, c)
+    val mediumSide = mediumOf(a, b, c)
+    if (maxSide > mediumSide + minSide) return -1
     // наибольший угол напротив наибольшей стороны
     // косинус наибольшего угла
-    val cos = (ave * ave + mn * mn - mx * mx) / (2 * ave * mn)
+    val cos = (mediumSide * mediumSide + minSide * minSide - maxSide * maxSide) / (2 * mediumSide * minSide)
     return (-sign(cos) + 1).toInt()
 
 }
@@ -149,6 +149,13 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     val m = maxOf(a, b, c, d)
     val n = minOf(a, b, c, d)
-    if (m - n > b - a + d - c) return -1
-    else return (b - a) + (d - c) - (m - n)
+    val endToEndLength = m - n
+    val abLength = b - a
+    val cdLength = d - c
+    return if (endToEndLength > abLength + cdLength) -1
+    else abLength + cdLength - endToEndLength
 }
+
+fun mediumOf(a: Double, b: Double, c: Double) = a + b + c - maxOf(a, b, c) - minOf(a, b, c)
+
+fun mediumOf(a: Int, b: Int, c: Int) = a + b + c - maxOf(a, b, c) - minOf(a, b, c)
