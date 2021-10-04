@@ -5,6 +5,7 @@ package lesson3.task1
 import lesson2.task2.daysInMonth
 import kotlin.math.sqrt
 import lesson1.task1.sqr
+import kotlin.math.abs
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -78,7 +79,7 @@ fun digitNumber(n: Int): Int {
     var count = 1
     var number = n
     while (number / 10 != 0) {
-        if (number >= 10) {
+        if (abs(number) >= 10) {
             count++
             number /= 10
         } else return count
