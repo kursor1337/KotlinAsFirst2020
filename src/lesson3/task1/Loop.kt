@@ -95,7 +95,7 @@ fun digitNumber(n: Int): Int {
 fun fib(n: Int): Int {
     var fib1 = 0
     var fib2 = 1
-    for (i in 1..n) {
+    for (i in 2..n) {
         val count = fib1 + fib2
         fib1 = fib2
         fib2 = count
