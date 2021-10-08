@@ -10,11 +10,21 @@ import kotlin.math.sqrt
 // Рекомендуемое количество баллов = 8
 // Вместе с предыдущими уроками = 24/33
 
+fun pow(x: Int, y: Int): Int {
+    var result = 1
+    if (y == 0) return result
+    else for (j in 1..y) {
+        result *= x
+    }
+    return result
+}
+
 /**
  * Пример
  *
  * Найти все корни уравнения x^2 = y
  */
+
 fun sqRoots(y: Double) =
     when {
         y < 0 -> listOf()
@@ -231,7 +241,45 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var result = 0
+    val eng = listOf(
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z'
+    )
+    val digits = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+    for ((k, i) in (str.length - 1 downTo 0).withIndex()) {
+        val elem = str[k]
+        val number = if (elem in digits) digits.indexOf(elem) * pow(base, i)
+        else (eng.indexOf(elem) + 10) * pow(base, i)
+        result += number
+    }
+return result
+}
 
 /**
  * Сложная (5 баллов)
@@ -241,7 +289,21 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var number = n
+    val rom = listOf("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
+    val num = listOf(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
+    var res = ""
+    while (number > 0) {
+        for (i in 12 downTo 0) {
+            while (number >= num[i]) {
+                number -= num[i]
+                res += rom[i]
+            }
+        }
+    }
+    return res
+}
 
 /**
  * Очень сложная (7 баллов)

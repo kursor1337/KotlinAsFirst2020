@@ -134,6 +134,13 @@ class Tests {
     }
 
     @Test
+    fun pow() {
+        assertEquals(16, pow(2, 4))
+        /*assertEquals(-5, times(listOf(1, -4), listOf(3, 2)))
+        assertEquals(-19, times(listOf(-1, 2, -3), listOf(3, -2, 4)))*/
+    }
+
+    @Test
     @Tag("3")
     fun polynom() {
         assertEquals(0, polynom(listOf(), 1000))
