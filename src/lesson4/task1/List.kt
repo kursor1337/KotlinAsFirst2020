@@ -278,7 +278,7 @@ fun decimalFromString(str: String, base: Int): Int {
         else (eng.indexOf(elem) + 10) * pow(base, i)
         result += number
     }
-return result
+    return result
 }
 
 /**
