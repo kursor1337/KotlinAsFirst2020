@@ -243,39 +243,10 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  */
 fun decimalFromString(str: String, base: Int): Int {
     var result = 0
-    val eng = listOf(
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'g',
-        'h',
-        'i',
-        'j',
-        'k',
-        'l',
-        'm',
-        'n',
-        'o',
-        'p',
-        'q',
-        'r',
-        's',
-        't',
-        'u',
-        'v',
-        'w',
-        'x',
-        'y',
-        'z'
-    )
-    val digits = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
     for ((k, i) in (str.length - 1 downTo 0).withIndex()) {
         val elem = str[k]
-        val number = if (elem in digits) digits.indexOf(elem) * pow(base, i)
-        else (eng.indexOf(elem) + 10) * pow(base, i)
+        val number = if (elem.isDigit()) (elem.code - 48) * pow(base, i)
+        else (elem.code - 87) * pow(base, i)
         result += number
     }
     return result
