@@ -234,7 +234,6 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
 fun decimalFromString(str: String, base: Int): Int = TODO()
 
 
-
 val romanNums = mapOf(
     1000 to "M",
     900 to "CM",
@@ -250,6 +249,7 @@ val romanNums = mapOf(
     4 to "IV",
     1 to "I",
 )
+
 /**
  * Сложная (5 баллов)
  *
@@ -259,16 +259,16 @@ val romanNums = mapOf(
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    var romanNum = ""
-    for (i in 0 until n) {
-        romanNum += "I"
-    }
+    val romanNum = StringBuilder()
+    var num = n
     for (i in romanNums.keys) {
-        romanNum = romanNum.replace("I".repeat(i), romanNums[i]!!, false)
+        while (num >= i) {
+            romanNum.append(romanNums[i])
+            num -= i
+        }
     }
-    return romanNum
+    return romanNum.toString()
 }
-
 
 
 fun Int.listOfDigits(): List<Int> {

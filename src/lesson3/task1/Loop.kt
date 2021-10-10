@@ -131,13 +131,13 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = m * n / gdc(m, n)
+fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
 
 
 /**
  * Функция находит НОД двух чисел
  */
-fun gdc(m: Int, n: Int): Int {
+fun gcd(m: Int, n: Int): Int {
     var div = 1
     for (i in 2..min(m, n)) {
         if (m % i == 0 && n % i == 0) div = i
@@ -152,7 +152,7 @@ fun gdc(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = gdc(m, n) == 1
+fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
 
 /**
  * Средняя (3 балла)
@@ -234,21 +234,7 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
-    var count = 0
-    var num = 1
-    while (count < n) {
-        val currentNum = sqr(num)
-        if (count + currentNum.length() < n) {
-            count += currentNum.length()
-            num++
-            continue
-        }
-        val at = count + currentNum.length() - n
-        return currentNum.fromRightDigitAt(at)
-    }
-    return 0
-}
+fun squareSequenceDigit(n: Int): Int = getNumberByIndexInSequence(n) { sqr(it) }
 
 /**
  * Сложная (5 баллов)
@@ -259,20 +245,20 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int {
+fun fibSequenceDigit(n: Int): Int = getNumberByIndexInSequence(n) { fib(it) }
+
+fun getNumberByIndexInSequence(n: Int, sequenceFunction: (Int) -> Int): Int {
     var count = 0
     var num = 1
-    while (count < n) {
-        val currentNum = fib(num)
-        if (count + currentNum.length() < n) {
-            count += currentNum.length()
-            num++
-            continue
-        }
-        val index = count + currentNum.length() - n
-        return currentNum.fromRightDigitAt(index)
+    var index = 0
+    var currentNum = sequenceFunction(num)
+    while (count + currentNum.length() < n) {
+        count += currentNum.length()
+        num++
+        currentNum = sequenceFunction(num)
+        index = count + currentNum.length() - n
     }
-    return 0
+    return currentNum.fromRightDigitAt(index)
 }
 
 fun Int.fromRightDigitAt(n: Int): Int {
