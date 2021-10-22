@@ -183,7 +183,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String = TODO()
 
 /**
  * Средняя (3 балла)
@@ -277,7 +277,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (i in list.indices) {
+        for (j in 1 until list.size) {
+            if (number - list[i] == list[j] && i != j) return Pair(minOf(i, j), maxOf(i, j))
+        }
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная (8 баллов)
@@ -300,4 +307,34 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val result = mutableSetOf<String>()
+    val weight = mutableListOf<Int>()
+    val price = mutableListOf<Int>()
+    val mapOfTreasures = mutableMapOf<String, Pair<Int, Int>>()
+    val treasure = mutableListOf<String>()
+    var remainingCapacity = capacity
+    for ((key, value) in treasures) {
+        treasure.add(key)
+        weight.add(value.first)
+        price.add(value.second)
+    }
+    while (treasure.isNotEmpty()) {
+        for (j in 0 until treasure.size) {
+            if (price[j] == price.maxOrNull()!!) {
+                mapOfTreasures[treasure[j]] = Pair(weight[j], price[j])
+                price.removeAt(j)
+                weight.removeAt(j)
+                treasure.removeAt(j)
+                break
+            }
+        }
+    }
+    for ((key, value) in mapOfTreasures) {
+        if (value.first <= remainingCapacity) {
+            remainingCapacity -= value.first
+            result.add(key)
+        }
+    }
+    return result
+}
