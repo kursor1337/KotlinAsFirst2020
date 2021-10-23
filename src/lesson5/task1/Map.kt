@@ -337,7 +337,11 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): MutableSe
         weight.add(value.first)
         price.add(value.second)
     }
-    for (j in 0 until mapOfTreasures.size - 1) {
+    for (j in 0 until mapOfTreasures.size - 2) {
+        if (weight[j] == capacity) {
+            if (price[j] < price[j + 1] + price[j + 2])
+                mapOfTreasures -= treasure[j]
+        }
         if (price[j] == price[j + 1]) {
             mapOfTreasures -= if (weight[j] > weight[j + 1]) {
                 treasure[j]
