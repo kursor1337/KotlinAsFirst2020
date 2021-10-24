@@ -342,12 +342,15 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             result.addAll(treasure)
             return result
         }
+
         if (price[j] == price[j + 1] && weight[j] != weight[j + 1]) {
             mapOfTreasures -= if (weight[j] > weight[j + 1]) {
                 treasure[j]
             } else treasure[j + 1]
             break
         }
+        if (price[j] < price[j + 1] + price[j + 2] && weight[j] == capacity)
+            mapOfTreasures -= treasure[j]
     }
     for ((key, value) in mapOfTreasures) {
         if (value.first <= remainingCapacity) {
