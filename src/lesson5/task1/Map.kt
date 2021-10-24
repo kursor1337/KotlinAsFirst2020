@@ -341,7 +341,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         if (weight[j] > capacity) mapOfTreasures -= treasure[j]
     }
     for (j in 0 until mapOfTreasures.size - 2) {
-        if (weight.sum() <= capacity) {
+        if (weight.sum() < capacity) {
             result.addAll(treasure)
             return result
         }
@@ -352,12 +352,24 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             break
         }
         if (weight[j] == weight[j + 1]) {
-            if (price[j] < price[j + 1]) mapOfTreasures -= treasure[j]
+            mapOfTreasures -= if (price[j] < price[j + 1]) treasure[j]
             else treasure[j + 1]
             break
         }
         if (price[j] < price[j + 1] + price[j + 2] && weight[j] == capacity) {
             mapOfTreasures -= treasure[j]
+        }
+        var weight1 = weight[j]
+        var price1 = price[j]
+        for (i in 1 until mapOfTreasures.size) {
+            if (weight1 + weight[i] < capacity) {
+                weight1 += weight[i]
+                price1 += price[i]
+            }
+        }
+        if (price.sum() - price[j] > price1) {
+            mapOfTreasures -= treasure[j]
+            break
         }
     }
     for ((key, value) in mapOfTreasures) {
