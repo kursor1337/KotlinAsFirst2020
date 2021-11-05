@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Урок 4: списки
@@ -270,6 +271,50 @@ fun roman(n: Int): String {
     return romanNum.toString()
 }
 
+/**
+ * Очень сложная (7 баллов)
+ *
+ * Записать заданное натуральное число 1..999999 прописью по-русски.
+ * Например, 375 = "триста семьдесят пять",
+ * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
+ */
+fun russian(n: Int): String {
+    val firstPart = if (n >= 1000) separate(n / 1000) else listOf()
+    val secondPart = separate(n % 1000)
+    var firstPartRus = ""
+    var secondPartRus = ""
+    for (i in firstPart) {
+        firstPartRus += when (i) {
+            1 -> "одна "
+            2 -> "две "
+            else -> rusNums[i] + " "
+        }
+    }
+    for (i in secondPart) {
+        secondPartRus += rusNums[i] + " "
+    }
+    if (firstPart.isNotEmpty()) {
+        firstPartRus += when (firstPart.last()) {
+            0 -> ""
+            1 -> "тысяча "
+            2, 3, 4 -> "тысячи "
+            else -> "тысяч "
+        }
+    }
+    return (firstPartRus + secondPartRus).dropLast(1)
+}
+
+fun separate(n: Int): List<Int> {
+    return n.listOfDigits().toMutableList().apply {
+        for (i in indices) this[i] *= 10.toDouble().pow(i).toInt()
+        if (size > 1 && this[1] == 10) {
+            this[1] += this[0]
+            this[0] = 0
+        }
+        if (!isEmpty()) reverse()
+        this.removeAll { it == 0 }
+    }
+}
 
 fun Int.listOfDigits(): List<Int> {
     var n = this
@@ -278,14 +323,19 @@ fun Int.listOfDigits(): List<Int> {
         nums.add(n % 10)
         n /= 10
     }
-    return nums.reversed()
+    return nums
 }
 
-/**
- * Очень сложная (7 баллов)
- *
- * Записать заданное натуральное число 1..999999 прописью по-русски.
- * Например, 375 = "триста семьдесят пять",
- * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
- */
-fun russian(n: Int): String = TODO()
+
+val rusNums = mapOf(
+    900 to "девятьсот", 800 to "восемьсот", 700 to "семьсот", 600 to "шестьсот",
+    500 to "пятьсот", 400 to "четыреста", 300 to "триста", 200 to "двести", 100 to "сто",
+    90 to "девяносто", 80 to "восемьдесят", 70 to "семьдесят", 60 to "шестьдесят",
+    50 to "пятьдесят", 40 to "сорок", 30 to "тридцать", 20 to "двадцать",
+    19 to "девятнадцать", 18 to "восемнадцать", 17 to "семнадцать", 16 to "шестнадцать", 15 to "пятнадцать",
+    14 to "четырнадцать", 13 to "тринадцать", 12 to "двенадцать", 11 to "одиннадцать", 10 to "десять",
+    9 to "девять", 8 to "восемь", 7 to "семь", 6 to "шесть",
+    5 to "пять", 4 to "четыре", 3 to "три", 2 to "два", 1 to "один", 0 to ""
+)
+
+
