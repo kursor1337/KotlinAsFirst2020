@@ -158,4 +158,4 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
 
 fun mediumOf(a: Double, b: Double, c: Double) = a + b + c - maxOf(a, b, c) - minOf(a, b, c)
 
-fun mediumOf(a: Int, b: Int, c: Int) = a + b + c - maxOf(a, b, c) - minOf(a, b, c)
+fun mediumOf(a: Int, b: Int, c: Int) = mediumOf(a.toDouble(), b.toDouble(), c.toDouble())
