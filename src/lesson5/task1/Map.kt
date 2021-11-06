@@ -2,7 +2,7 @@
 
 package lesson5.task1
 
-import kotlin.math.min
+import kotlin.math.max
 
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
@@ -280,12 +280,16 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val interimRes = mutableMapOf<Int, Int>()
+    var i1 = -1
+    var i2 = -1
     for (i in list.indices) {
-        for (j in 1 until list.size) {
-            if (number - list[i] == list[j] && i != j) return Pair(minOf(i, j), maxOf(i, j))
-        }
+        if (interimRes.containsKey(list[i])) {
+            i1 = interimRes[list[i]]!!
+            i2 = i
+        } else interimRes[number - list[i]] = i
     }
-    return Pair(-1, -1)
+    return Pair(i1, i2)
 }
 
 /**
@@ -313,70 +317,28 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val result = mutableSetOf<String>()
     val weight = mutableListOf<Int>()
     val price = mutableListOf<Int>()
-    val mapOfTreasures = mutableMapOf<String, Pair<Int, Int>>()
     val treasure = mutableListOf<String>()
-    var remainingCapacity = capacity
+    val arrayPrice = Array(treasures.size + 1) { Array(capacity + 1) { 0 } }
+    var t = treasures.size
+    var c = capacity
     for ((key, value) in treasures) {
-        treasure.add(key)
         weight.add(value.first)
         price.add(value.second)
-    }
-    while (treasure.isNotEmpty()) {
-        for (j in 0 until treasure.size) {
-            if (price[j] == price.maxOrNull()!!) {
-                mapOfTreasures[treasure[j]] = Pair(weight[j], price[j])
-                price.removeAt(j)
-                weight.removeAt(j)
-                treasure.removeAt(j)
-                break
-            }
-        }
-    }
-    for ((key, value) in mapOfTreasures) {
         treasure.add(key)
-        weight.add(value.first)
-        price.add(value.second)
     }
-    for (j in 0 until mapOfTreasures.size) {
-        if (weight[j] > capacity) mapOfTreasures -= treasure[j]
-    }
-    for (j in 0 until mapOfTreasures.size - 2) {
-        if (weight.sum() < capacity) {
-            result.addAll(treasure)
-            return result
-        }
-        if (price[j] == price[j + 1] && weight[j] != weight[j + 1]) {
-            mapOfTreasures -= if (weight[j] > weight[j + 1]) {
-                treasure[j]
-            } else treasure[j + 1]
-            break
-        }
-        if (weight[j] == weight[j + 1] && price[j] != price[j + 1]) {
-            mapOfTreasures -= if (price[j] < price[j + 1]) treasure[j]
-            else treasure[j + 1]
-            break
-        }
-        if (price[j] < price[j + 1] + price[j + 2] && weight[j] == capacity) {
-            mapOfTreasures -= treasure[j]
-        }
-        var weight1 = weight[j]
-        var price1 = price[j]
-        for (i in 1 until mapOfTreasures.size) {
-            if (weight1 + weight[i] <= capacity) {
-                weight1 += weight[i]
-                price1 += price[i]
-            }
-        }
-        if (price.sum() - price[j] > price1) {
-            mapOfTreasures -= treasure[j]
-            break
+    for (i in 1..treasures.size) {
+        for (j in 0..capacity) {
+            if (j >= weight[i - 1])
+                arrayPrice[i][j] = max(arrayPrice[i - 1][j], arrayPrice[i - 1][j - weight[i - 1]] + price[i - 1])
+            else arrayPrice[i][j] = arrayPrice[i - 1][j]
         }
     }
-    for ((key, value) in mapOfTreasures) {
-        if (value.first <= remainingCapacity) {
-            remainingCapacity -= value.first
-            result.add(key)
+    while (t != 0) {
+        if (arrayPrice[t][c] != arrayPrice[t - 1][c]) {
+            result.add(treasure[t - 1])
+            c -= weight[t - 1]
         }
+        t--
     }
     return result
 }
