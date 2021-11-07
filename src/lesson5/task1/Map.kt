@@ -316,7 +316,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         treasures.toList().sortedBy { (_, value) -> value.second.toDouble() / value.first.toDouble() }.reversed()
             .toMap()
     for ((name, pair) in sortedTreasures) {
-        if (cap - pair.first > 0) {
+        if (cap - pair.first >= 0) {
             cap -= pair.first
             result.add(name)
         }
