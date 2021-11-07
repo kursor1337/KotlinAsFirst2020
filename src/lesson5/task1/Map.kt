@@ -277,7 +277,16 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (i in list.indices) {
+        for (j in 0 until i) {
+            if (list[i] + list[j] == number) {
+                return j to i
+            }
+        }
+    }
+    return -1 to -1
+}
 
 /**
  * Очень сложная (8 баллов)
@@ -300,4 +309,17 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val result = mutableSetOf<String>()
+    var cap = capacity
+    val sortedTreasures =
+        treasures.toList().sortedBy { (_, value) -> value.second.toDouble() / value.first.toDouble() }.reversed()
+            .toMap()
+    for ((name, pair) in sortedTreasures) {
+        if (cap - pair.first > 0) {
+            cap -= pair.first
+            result.add(name)
+        }
+    }
+    return result
+}
