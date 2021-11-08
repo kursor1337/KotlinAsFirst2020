@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson4.task1.roman
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -162,7 +164,28 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (description.isEmpty()) return ""
+    var result = ""
+    val parts = description.split("; ")
+    val mapOfProducts = mutableMapOf<String, Double>()
+    val products = mutableListOf<String>()
+    val price = mutableListOf<Double>()
+    for (i in parts.indices) {
+        val productPrice = parts[i].split(" ")
+        mapOfProducts[productPrice[0]] = productPrice[1].toDouble()
+    }
+    for ((key, value) in mapOfProducts) {
+        products.add(key)
+        price.add(value)
+    }
+    for (i in products.indices) {
+        if (price[i] == price.maxOrNull()!!) {
+            result = products[i]
+        }
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -175,7 +198,30 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun simplification(str: String): String {
+    return str.replace("CM", "DCD").replace("CD", "CCCC")
+        .replace("XC", "LXL").replace("XL", "XXXX")
+        .replace("IX", "VIV").replace("IV", "IIII")
+}
+
+fun fromRoman(roman: String): Int {
+    var romans = simplification(roman)
+    var result = 0
+    val rom = mutableListOf("M", "D", "C", "L", "X", "V", "I")
+    val num = mutableListOf(1000, 500, 100, 50, 10, 5, 1)
+    for (i in rom.indices) {
+        while (romans.startsWith(rom[i])) {
+            if (romans.length == rom[i].length) {
+                result += num[i]
+                break
+            }
+            result += num[i]
+            romans = romans.substring(rom[i].length)
+        }
+    }
+    return if (result == 0) -1
+    else result
+}
 
 /**
  * Очень сложная (7 баллов)
