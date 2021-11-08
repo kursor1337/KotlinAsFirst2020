@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.util.Collections.max
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -278,12 +280,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val map = mutableMapOf<Int, Int>()
     for (i in list.indices) {
-        for (j in 0 until i) {
-            if (list[i] + list[j] == number) {
-                return j to i
-            }
-        }
+        if (map[number - list[i]] != null) return map[number - list[i]]!! to i
+        else map[list[i]] = i
     }
     return -1 to -1
 }
@@ -312,8 +312,18 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val result = mutableSetOf<String>()
     var cap = capacity
+
+//    val m = mutableMapOf(0 to Pair<Int, Set<String>>(0, emptySet()))
+//    for (w in 0 until capacity) {
+//        val temp = treasures.toList().maxByOrNull { (key, value) ->
+//            if (value.second < w) value.second + m[w - value.first]!!.first else 0
+//        }
+//        m[w] =
+//    }
     run lit@{
-        treasures.toList().sortedBy { (_, value) -> value.second.toDouble() / value.first.toDouble() }.reversed()
+        treasures.toList().sortedBy { (_, value) ->
+            value.second.toDouble() * value.second.toDouble() / value.first.toDouble()
+        }.reversed()
             .forEach { (name, pair) ->
                 if (cap - pair.first >= 0) {
                     cap -= pair.first
