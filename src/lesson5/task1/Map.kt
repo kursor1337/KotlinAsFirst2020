@@ -309,28 +309,21 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val result = mutableSetOf<String>()
-    var cap = capacity
 
-//    val m = mutableMapOf(0 to Pair<Int, Set<String>>(0, emptySet()))
-//    for (w in 0 until capacity) {
-//        val temp = treasures.toList().maxByOrNull { (key, value) ->
-//            if (value.second < w) value.second + m[w - value.first]!!.first else 0
-//        }
-//        m[w] =
-//    }
-    run lit@{
-        treasures.toList().sortedBy { (_, value) ->
-            value.second.toDouble() * value.second.toDouble() / value.first.toDouble()
-        }.reversed()
-            .forEach { (name, pair) ->
-                if (cap - pair.first >= 0) {
-                    cap -= pair.first
-                    result.add(name)
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val bag = mutableListOf<Pair<Int, Set<String>>>()
+    for (i in 0..capacity) {
+        for ((name, weight, value) in treasures) {
+            bag.add(0 to emptySet())
+            if (weight < i) {
+                if (bag[i].first < bag[i - weight].first + value) {
+                    bag[i] = (bag[i - weight].first + value) to (bag[i - weight].second + name)
                 }
-                if (cap == 0) return@lit
             }
+        }
     }
-    return result
+    return bag[capacity].second
 }
+
+private operator fun Map.Entry<String, Pair<Int, Int>>.component2(): Int = value.first
+private operator fun Map.Entry<String, Pair<Int, Int>>.component3(): Int = value.second
