@@ -166,7 +166,6 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  */
 fun mostExpensive(description: String): String {
     if (description.isEmpty()) return ""
-    var result = ""
     val parts = description.split("; ")
     val mapOfProducts = mutableMapOf<String, Double>()
     val products = mutableListOf<String>()
@@ -179,12 +178,7 @@ fun mostExpensive(description: String): String {
         products.add(key)
         price.add(value)
     }
-    for (i in products.indices) {
-        if (price[i] == price.maxOrNull()!!) {
-            result = products[i]
-        }
-    }
-    return result
+    return products[price.indexOf(price.maxOrNull())]
 }
 
 /**
@@ -209,12 +203,11 @@ fun fromRoman(roman: String): Int {
     var result = 0
     val rom = mutableListOf("M", "D", "C", "L", "X", "V", "I")
     val num = mutableListOf(1000, 500, 100, 50, 10, 5, 1)
+    for (i in romans.indices) {
+        if (romans[i].toString() !in rom) return -1
+    }
     for (i in rom.indices) {
         while (romans.startsWith(rom[i])) {
-            if (romans.length == rom[i].length) {
-                result += num[i]
-                break
-            }
             result += num[i]
             romans = romans.substring(rom[i].length)
         }
