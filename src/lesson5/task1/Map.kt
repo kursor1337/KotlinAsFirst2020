@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import java.util.Collections.max
-
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -311,9 +309,9 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val bag = mutableListOf<Pair<Int, Set<String>>>()
-    for (i in 0..capacity) {
-        bag.add(0 to emptySet())
+    val bag = mutableListOf<Pair<Int, Set<String>>>(0 to emptySet())
+    for (i in 1..capacity) {
+        bag.add(bag[i - 1])
         for ((name, weight, value) in treasures) {
             if (weight <= i) {
                 if (bag[i].first < bag[i - weight].first + value) {
