@@ -315,7 +315,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     for (i in 0..capacity) {
         bag.add(0 to emptySet())
         for ((name, weight, value) in treasures) {
-            if (weight < i) {
+            if (weight <= i) {
                 if (bag[i].first < bag[i - weight].first + value) {
                     bag[i] = (bag[i - weight].first + value) to (bag[i - weight].second + name)
                 }
