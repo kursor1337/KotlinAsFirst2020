@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.lang.Integer.max
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -309,19 +311,33 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val bag = mutableListOf<Pair<Int, Set<String>>>()
-    for (i in 0..capacity) {
-        bag.add(0 to emptySet())
-        for ((name, weight, value) in treasures) {
-            if (weight <= i) {
-                if (bag[i].first < bag[i - weight].first + value && name !in bag[i - weight].second) {
-                    bag[i] = (bag[i - weight].first + value) to (bag[i - weight].second + name)
-                }
+    val result = mutableSetOf<String>()
+    val a = Array(treasures.size + 1) { IntArray(capacity + 1) }
+    val names = treasures.toList().map { (name, _) -> name }
+    val weights = treasures.toList().map { (_, pair) -> pair.first }
+    val values = treasures.toList().map { (_, pair) -> pair.second }
+
+    for (k in 1..treasures.size) {
+        for (s in 1..capacity) {
+            if (s >= weights[k - 1]) a[k][s] = max(
+                a[k - 1][s],
+                a[k - 1][s - weights[k - 1]] + values[k - 1]
+            )
+            else a[k][s] = a[k - 1][s]
+        }
+    }
+
+    fun findAns(k: Int, s: Int) {
+        when (a[k][s]) {
+            0 -> return
+            a[k - 1][s] -> findAns(k - 1, s)
+            else -> {
+                findAns(k - 1, s - weights[k - 1])
+                result.add(names[k - 1])
             }
         }
     }
-    return bag[capacity].second
-}
 
-private operator fun Map.Entry<String, Pair<Int, Int>>.component2(): Int = value.first
-private operator fun Map.Entry<String, Pair<Int, Int>>.component3(): Int = value.second
+    findAns(treasures.size, capacity)
+    return result
+}
