@@ -319,11 +319,8 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
 
     for (k in 1..treasures.size) {
         for (s in 1..capacity) {
-            if (s >= weights[k - 1]) a[k][s] = max(
-                a[k - 1][s],
-                a[k - 1][s - weights[k - 1]] + values[k - 1]
-            )
-            else a[k][s] = a[k - 1][s]
+            a[k][s] = if (s >= weights[k - 1]) max(a[k - 1][s], a[k - 1][s - weights[k - 1]] + values[k - 1])
+            else a[k - 1][s]
         }
     }
 
