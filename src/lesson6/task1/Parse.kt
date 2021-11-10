@@ -195,14 +195,12 @@ val romanMap = mapOf(
 )
 
 fun fromRoman(roman: String): Int {
-    println("New Test")
     val romanNum = StringBuilder(roman.reversed())
+    if (roman == "") return -1
     var num = 0
     for ((r, n) in romanMap) {
         while (romanNum.indexOf(r) != -1) {
-            print("$romanNum ")
             val startIndex = romanNum.indexOf(r)
-            println(startIndex)
             if (startIndex != 0) break
             num += n
             romanNum.delete(startIndex, startIndex + r.length)
