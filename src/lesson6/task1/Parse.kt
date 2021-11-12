@@ -2,6 +2,7 @@
 
 package lesson6.task1
 
+import java.lang.IllegalArgumentException
 import java.lang.StringBuilder
 
 // Урок 6: разбор строк, исключения
@@ -164,7 +165,18 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+
+fun mostExpensive(description: String): String {
+    if (description.isEmpty()) return description
+    val productList = mutableListOf<Pair<String, Double>>()
+    val temp = description.split("; ")
+    for (i in temp) {
+        val (name, price) = i.split(" ")
+        productList.add(name to price.toDouble())
+    }
+    val result = productList.maxByOrNull { it.second }
+    return result?.first ?: ""
+}
 
 /**
  * Сложная (6 баллов)
@@ -245,4 +257,5 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
+
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
