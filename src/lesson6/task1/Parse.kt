@@ -195,19 +195,16 @@ val romanMap = mapOf(
 )
 
 fun fromRoman(roman: String): Int {
-    val romanNum = StringBuilder(roman.reversed())
     if (roman == "") return -1
+    val romanNum = StringBuilder(roman.reversed())
     var num = 0
     for ((r, n) in romanMap) {
-        while (romanNum.indexOf(r) != -1) {
-            val startIndex = romanNum.indexOf(r)
-            if (startIndex != 0) break
+        while (romanNum.startsWith(r, ignoreCase = false)) {
             num += n
-            romanNum.delete(startIndex, startIndex + r.length)
-
+            romanNum.delete(0, r.length)
         }
     }
-    return if (romanNum.length != 0) -1
+    return if (romanNum.isNotEmpty()) -1
     else num
 }
 
