@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson4.task1.roman
+import kotlin.math.max
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -165,22 +166,31 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    if (description.isEmpty()) return ""
     val parts = description.split("; ")
+    if (description.isEmpty()) return ""
     val mapOfProducts = mutableMapOf<String, Double>()
-    val products = mutableListOf<String>()
-    val price = mutableListOf<Double>()
+    var maxValue = 0.0
+    var maxKey = ""
     for (i in parts.indices) {
         val productPrice = parts[i].split(" ")
-        mapOfProducts[productPrice[0]] = productPrice[1].toDouble()
+        if (productPrice.size != 2) return ""
+        try {
+            productPrice[1].toDouble()
+        } catch (e: NumberFormatException) {
+            return ""
+        }
+        if (productPrice[1].toDouble() >= 0.0)
+            mapOfProducts[productPrice[0]] = productPrice[1].toDouble()
+        else return ""
     }
     for ((key, value) in mapOfProducts) {
-        products.add(key)
-        price.add(value)
+        if (value >= maxValue) {
+            maxValue = value
+            maxKey = key
+        }
     }
-    return products[price.indexOf(price.maxOrNull())]
+    return maxKey
 }
-
 /**
  * Сложная (6 баллов)
  *
@@ -203,8 +213,9 @@ fun fromRoman(roman: String): Int {
     var result = 0
     val rom = mutableListOf("M", "D", "C", "L", "X", "V", "I")
     val num = mutableListOf(1000, 500, 100, 50, 10, 5, 1)
+    val romHash = rom.toHashSet()
     for (i in romans.indices) {
-        if (romans[i].toString() !in rom) return -1
+        if (!romHash.contains(romans[i].toString())) return -1
     }
     for (i in rom.indices) {
         while (romans.startsWith(rom[i])) {
@@ -212,8 +223,7 @@ fun fromRoman(roman: String): Int {
             romans = romans.substring(rom[i].length)
         }
     }
-    return if (result == 0) -1
-    else result
+    return result
 }
 
 /**
