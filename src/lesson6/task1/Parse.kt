@@ -221,7 +221,8 @@ fun fromRoman(roman: String): Int {
             romans = romans.substring(rom[i].length)
         }
     }
-    return result
+    return if (result == 0) -1
+    else result
 }
 
 /**
