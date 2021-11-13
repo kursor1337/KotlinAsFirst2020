@@ -2,9 +2,6 @@
 
 package lesson6.task1
 
-import lesson4.task1.roman
-import kotlin.math.max
-
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -191,6 +188,7 @@ fun mostExpensive(description: String): String {
     }
     return maxKey
 }
+
 /**
  * Сложная (6 баллов)
  *
