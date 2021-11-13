@@ -2,7 +2,11 @@
 
 package lesson7.task1
 
+import lesson3.task1.length
+import lesson4.task1.listOfDigits
+import java.io.BufferedWriter
 import java.io.File
+import kotlin.math.pow
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -268,15 +272,15 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -319,65 +323,65 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <p>
-      <ul>
-        <li>
-          Утка по-пекински
-          <ul>
-            <li>Утка</li>
-            <li>Соус</li>
-          </ul>
-        </li>
-        <li>
-          Салат Оливье
-          <ol>
-            <li>Мясо
-              <ul>
-                <li>Или колбаса</li>
-              </ul>
-            </li>
-            <li>Майонез</li>
-            <li>Картофель</li>
-            <li>Что-то там ещё</li>
-          </ol>
-        </li>
-        <li>Помидоры</li>
-        <li>Фрукты
-          <ol>
-            <li>Бананы</li>
-            <li>Яблоки
-              <ol>
-                <li>Красные</li>
-                <li>Зелёные</li>
-              </ol>
-            </li>
-          </ol>
-        </li>
-      </ul>
-    </p>
-  </body>
+<body>
+<p>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>Или колбаса</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>Фрукты
+<ol>
+<li>Бананы</li>
+<li>Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</p>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -404,23 +408,23 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
@@ -449,6 +453,72 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val bw = File(outputName).bufferedWriter()
+    val res = lhv / rhv
+
+    bw.write(" $lhv | $rhv")
+    bw.newLine()
+
+    // temp int to store first division (198 in example)
+    val temp = if (lhv < rhv) lhv
+    else {
+        if (lhv.subInt(rhv.length()) / rhv == 0) lhv.subInt(rhv.length() + 1)
+        else lhv.subInt(rhv.length())
+    }
+
+    val firstHalf = "-${temp - temp % rhv}"
+    val secondHalf = " ".repeat(4 + lhv.length() - firstHalf.length) + res.toString()
+    bw.writeln(firstHalf + secondHalf)
+    bw.writeln("-".repeat(firstHalf.length))
+
+    var prefix = " ".repeat(firstHalf.length - 2)  // spaces at the start of the line
+    var remainder = lhv - rhv * res.decompose()[0]
+    var needExtraDigit = false
+    var i = 1
+    while (remainder / rhv != 0) {
+        val divFirst = if (needExtraDigit) remainder.subInt(rhv.length() + 1)
+        else remainder.subInt(rhv.length())
+        val divSecond = divFirst - divFirst % rhv
+        needExtraDigit = divSecond == 0
+        val nsfw = divFirst.length() - divSecond.length() == 1 // check if divSecond needs extra space
+        println(divFirst.length() - divSecond.length())
+        bw.writeln("$prefix $divFirst")
+        bw.writeln(
+            if (nsfw) "$prefix -${divSecond}"
+            else "$prefix-${divSecond}"
+        )
+        bw.writeln(
+            prefix +
+                    if (nsfw) " " + "-".repeat(divSecond.length() + 1)
+                    else "-".repeat(divSecond.length() + 1)
+        )
+        if (!needExtraDigit) {
+            val dif = divFirst - divSecond
+            prefix += if (dif != 0) " ".repeat(divFirst.length() - dif.length())
+            else " "
+        }
+        remainder -= rhv * res.decompose()[i++]
+    }
+    bw.write("$prefix $remainder")
+    bw.flush()
+    bw.close()
 }
 
+fun Int.subInt(startIndex: Int, endIndex: Int): Int {
+    val digits = this.listOfDigits().reversed()
+    var result = 0
+    for (i in startIndex until endIndex) {
+        result += digits[i]
+        result *= 10
+    }
+    return result / 10
+}
+fun Int.subInt(endIndex: Int) = this.subInt(0, endIndex)
+
+fun BufferedWriter.writeln(string: String) {
+    write(string)
+    newLine()
+}
+
+fun Int.decompose(): List<Int> = listOfDigits().toMutableList()
+    .mapIndexed { index, i -> i * 10.toDouble().pow(index).toInt() }.reversed()

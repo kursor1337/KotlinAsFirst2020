@@ -272,6 +272,7 @@ fun Int.fromRightDigitAt(n: Int): Int {
 }
 
 fun Int.length(): Int {
+    if (this == 0) return 1
     var k = 0
     var num = this
     while (num > 0) {

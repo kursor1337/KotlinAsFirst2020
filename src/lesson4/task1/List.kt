@@ -317,8 +317,9 @@ fun separate(n: Int): List<Int> {
 }
 
 fun Int.listOfDigits(): List<Int> {
+    if ( this == 0) return listOf(0)
     var n = this
-    val nums = ArrayList<Int>()
+    val nums = mutableListOf<Int>()
     while (n > 0) {
         nums.add(n % 10)
         n /= 10
