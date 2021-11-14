@@ -475,7 +475,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val secondHalf = " ".repeat(4 + lhv.length() - firstHalf.length) + result.toString()
     bw.writeln(firstHalf + secondHalf)
     bw.writeln("-".repeat(firstHalf.length))
-    var prefix = " ".repeat(firstHalf.length - 1)  // spaces at the start of the line
+    var prefix = " ".repeat(firstHalf.length - remainder.length())  // spaces at the start of the line
     var i = div2.length()
     bw.write(prefix + remainder)
     if (i < lhv.length()) {
@@ -496,7 +496,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         div2Line = "${prefix.dropLast(1)}-${div2}"
         val nsfw = div1Line.length > div2Line.length // check if divSecond needs extra space
         if (nsfw) div2Line = " $div2Line"
-        println("$div1Line \n $div2Line")
         delimiterLine = if (nsfw) prefix + "-".repeat(div2.length() + 1)
         else prefix.dropLast(1) + "-".repeat(div2.length() + 1)
         if (!needExtraDigit) prefix = " ".repeat(div2Line.length - 1)
