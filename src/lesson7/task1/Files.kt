@@ -515,11 +515,20 @@ fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
         return startIndex + string.length - 1
     }
 
+    fun indexOfSmth(row: Int): Int {
+        for (i in matrix[row].indices) if (matrix[row][i] != " ") return i
+        return -1
+    }
+
     printIntInMatrix(dividend, 0, 1)
     var div2 = quotientDigits[0] * divisor
     var div1 = dividend.subInt(div2.length())
-    var temp = printIntInMatrixByEndIndex(div2, 1, div1.length(), addMinus = true)
-    var remIndex = printInMatrix("-".repeat(div2.length() + 1), 2, temp)
+    printIntInMatrixByEndIndex(div2, 1, div1.length(), addMinus = true)
+    var remIndex = printInMatrix(
+        "-".repeat(maxOf(div2.length() + 1, div1.length())),
+        2,
+        minOf(indexOfSmth(0), indexOfSmth(1))
+    )
     var rem = div1 - div2
     val offset = div2.length() - 1
 
@@ -528,8 +537,12 @@ fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
         printIntInMatrixByEndIndex(dividendDigits[i + offset], 3 * i, remIndex + 1)
         div2 = quotientDigits[i] * divisor
         div1 = rem * 10 + dividendDigits[i + offset]
-        temp = printIntInMatrixByEndIndex(div2, 3 * i + 1, remIndex + 1, addMinus = true)
-        remIndex = printInMatrix("-".repeat(div2.length() + 1), 3 * i + 2, temp)
+        printIntInMatrixByEndIndex(div2, 3 * i + 1, remIndex + 1, addMinus = true)
+        remIndex = printInMatrix(
+            "-".repeat(maxOf(div2.length() + 1, div1.length())),
+            3 * i + 2,
+            minOf(indexOfSmth(3 * i + 1), indexOfSmth(3 * i))
+        )
         rem = div1 - div2
     }
 
