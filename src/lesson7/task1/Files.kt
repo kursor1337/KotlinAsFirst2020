@@ -460,6 +460,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     bw.newLine()
     // temp int to store first division (198 in example)
     // function Int.length() from lesson 4
+    val divs1 = mutableListOf<Int>()
+    val divs2 = mutableListOf<Int>()
     var div1 = if (lhv < rhv) lhv
     else {
         if (lhv.subInt(rhv.length()) / rhv == 0) lhv.subInt(rhv.length() + 1)
@@ -470,6 +472,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var delimiterLine = ""
 
     var div2 = div1 - div1 % rhv
+    divs1.add(div1)
+    divs2.add(div2)
     var remainder = div1 - div2
     val firstHalf = "-${div2}"
     val secondHalf = " ".repeat(4 + lhv.length() - firstHalf.length) + result.toString()
@@ -480,7 +484,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     bw.write(prefix + remainder)
     if (i < lhv.length()) {
         bw.writeln(digits[i].toString())
-        div1 = remainder * 10 + digits[i]
         div1Line = prefix + remainder + digits[i].toString()
     }
 
@@ -491,17 +494,18 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     while (i < lhv.length()) {
         div1 = remainder * 10 + digits[i]
         div2 = div1 - div1 % rhv
-        needExtraDigit = div2 == 0
+        needExtraDigit = div2 == 0 && div1 != 0
 
         div2Line = "${prefix.dropLast(1)}-${div2}"
         val nsfw = div1Line.length > div2Line.length // check if divSecond needs extra space
         if (nsfw) div2Line = " $div2Line"
         delimiterLine = if (nsfw) prefix + "-".repeat(div2.length() + 1)
         else prefix.dropLast(1) + "-".repeat(div2.length() + 1)
-        if (!needExtraDigit) prefix = " ".repeat(div2Line.length - 1)
+
         bw.writeln(div2Line)
         bw.writeln(delimiterLine)
         i++
+        if (!needExtraDigit) prefix = " ".repeat(div2Line.length - 1)
         remainder = div1 - div2
         bw.write(prefix + remainder)
 
