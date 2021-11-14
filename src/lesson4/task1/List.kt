@@ -305,7 +305,7 @@ fun russian(n: Int): String {
 }
 
 fun separate(n: Int): List<Int> {
-    return n.listOfDigits().toMutableList().apply {
+    return n.digits().toMutableList().apply {
         for (i in indices) this[i] *= 10.toDouble().pow(i).toInt()
         if (size > 1 && this[1] == 10) {
             this[1] += this[0]
@@ -316,7 +316,7 @@ fun separate(n: Int): List<Int> {
     }
 }
 
-fun Int.listOfDigits(): List<Int> {
+fun Int.digits(): List<Int> {
     if ( this == 0) return listOf(0)
     var n = this
     val nums = mutableListOf<Int>()

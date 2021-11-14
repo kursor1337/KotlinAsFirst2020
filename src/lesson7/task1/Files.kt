@@ -3,7 +3,7 @@
 package lesson7.task1
 
 import lesson3.task1.length
-import lesson4.task1.listOfDigits
+import lesson4.task1.digits
 import java.io.BufferedWriter
 import java.io.File
 import kotlin.math.pow
@@ -438,90 +438,201 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
+ 19935 | 22
+-198     906
+----
+   13
+   -0
+   --
+   135
+  -132
+  ----
+     3
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
-fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
+
+/**
+ *  616995 | 2
+ * -6        308497
+ * --
+ *  01
+ *  -0
+ *  --
+ *   16
+ *  -16
+ *  ---
+ *   09
+ *   -8
+ *   --
+ *    19
+ *   -18
+ *   ---
+ *     15
+ *    -14
+ *    ---
+ *      1
+
+ */
+
+fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
+    val dividendDigits = dividend.digits().reversed()
+    val divisorDigits = divisor.digits().reversed()
+    val quotient = dividend / divisor
+    val quotientDigits = quotient.digits().reversed()
+    val remainder = dividend % divisor
+    val remainderDigits = remainder.digits().reversed()
+
+    val matrix = Array(3 * quotient.length() + 1) { Array(dividend.length() + 1) { " " } }
+
+    // prints some int in matrix
+    // returns endIndex
+    fun printIntInMatrix(n: Int, row: Int, startIndex: Int): Int {
+        for ((index, digit) in n.digits().reversed().withIndex()) {
+            matrix[row][startIndex + index] = digit.toString()
+        }
+        return startIndex + n.length() - 1
+    }
+
+    // returns startIndex
+    fun printIntInMatrixByEndIndex(n: Int, row: Int, endIndex: Int, addMinus: Boolean = false): Int {
+        println(n)
+        for ((index, digit) in n.digits().withIndex()) {
+            matrix[row][endIndex - index] = digit.toString()
+        }
+        if (addMinus) {
+            matrix[row][endIndex - n.length()] = "-"
+            return endIndex - n.length()
+        }
+        return endIndex - n.length() + 1
+    }
+
+    // returns endIndex
+    fun printInMatrix(string: String, row: Int, startIndex: Int): Int {
+        string.forEachIndexed { index, c ->
+            matrix[row][startIndex + index] = c.toString()
+        }
+        return startIndex + string.length - 1
+    }
+
+    printIntInMatrix(dividend, 0, 1)
+    var div2 = quotientDigits[0] * divisor
+    var div1 = dividend.subInt(div2.length())
+    var temp = printIntInMatrixByEndIndex(div2, 1, div1.length(), addMinus = true)
+    var remIndex = printInMatrix("-".repeat(div2.length() + 1), 2, temp)
+    var rem = div1 - div2
+    val offset = div2.length() - 1
+
+    for (i in 1 until quotient.length()) {
+        printIntInMatrixByEndIndex(rem, 3 * i, remIndex)
+        printIntInMatrixByEndIndex(dividendDigits[i + offset], 3 * i, remIndex + 1)
+        div2 = quotientDigits[i] * divisor
+        div1 = rem * 10 + dividendDigits[i + offset]
+        temp = printIntInMatrixByEndIndex(div2, 3 * i + 1, remIndex + 1, addMinus = true)
+        remIndex = printInMatrix("-".repeat(div2.length() + 1), 3 * i + 2, temp)
+        rem = div1 - div2
+    }
+
+    printIntInMatrixByEndIndex(rem, matrix.size - 1, dividend.length())
+
     val bw = File(outputName).bufferedWriter()
-    val result = lhv / rhv
-    val digits = lhv.listOfDigits().reversed()
 
-    bw.write(" $lhv | $rhv")
-    bw.newLine()
-    // temp int to store first division (198 in example)
-    // function Int.length() from lesson 4
-    val divs1 = mutableListOf<Int>()
-    val divs2 = mutableListOf<Int>()
-    var div1 = if (lhv < rhv) lhv
-    else {
-        if (lhv.subInt(rhv.length()) / rhv == 0) lhv.subInt(rhv.length() + 1)
-        else lhv.subInt(rhv.length())
-    }
-    var div1Line = ""
-    var div2Line = ""
-    var delimiterLine = ""
-
-    var div2 = div1 - div1 % rhv
-    divs1.add(div1)
-    divs2.add(div2)
-    var remainder = div1 - div2
-    val firstHalf = "-${div2}"
-    val secondHalf = " ".repeat(4 + lhv.length() - firstHalf.length) + result.toString()
-    bw.writeln(firstHalf + secondHalf)
-    bw.writeln("-".repeat(firstHalf.length))
-    var prefix = " ".repeat(firstHalf.length - remainder.length())  // spaces at the start of the line
-    var i = div2.length()
-    bw.write(prefix + remainder)
-    if (i < lhv.length()) {
-        bw.writeln(digits[i].toString())
-        div1Line = prefix + remainder + digits[i].toString()
-    }
-
-    var needExtraDigit = false
-
-
-
-    while (i < lhv.length()) {
-        div1 = remainder * 10 + digits[i]
-        div2 = div1 - div1 % rhv
-        needExtraDigit = div2 == 0 && div1 != 0
-
-        div2Line = "${prefix.dropLast(1)}-${div2}"
-        val nsfw = div1Line.length > div2Line.length // check if divSecond needs extra space
-        if (nsfw) div2Line = " $div2Line"
-        delimiterLine = if (nsfw) prefix + "-".repeat(div2.length() + 1)
-        else prefix.dropLast(1) + "-".repeat(div2.length() + 1)
-
-        bw.writeln(div2Line)
-        bw.writeln(delimiterLine)
-        i++
-        if (!needExtraDigit) prefix = " ".repeat(div2Line.length - 1)
-        remainder = div1 - div2
-        bw.write(prefix + remainder)
-
-        if (i < lhv.length()) {
-            bw.writeln(digits[i].toString())
-            div1Line = prefix + remainder + digits[i].toString()
-        } else break
-
-
+    matrix.forEachIndexed { index, array ->
+        when (index) {
+            0 -> {
+                for (i in array) bw.write(i)
+                bw.writeln(" | $divisor")
+            }
+            1 -> {
+                for (i in array) bw.write(i)
+                bw.writeln("   $quotient")
+            }
+            else -> {
+                var printedLine = false
+                for (i in array) {
+                    if (printedLine && i == " ") break
+                    if (i != " ") printedLine = true
+                    bw.write(i)
+                }
+                bw.newLine()
+            }
+        }
     }
     bw.flush()
     bw.close()
+
+
+//    bw.write(" $lhv | $rhv")
+//    bw.newLine()
+//    // temp int to store first division (198 in example)
+//    // function Int.length() from lesson 4
+//    val divs1 = mutableListOf<Int>()
+//    val divs2 = mutableListOf<Int>()
+//    var div1 = if (lhv < rhv) lhv
+//    else {
+//        if (lhv.subInt(rhv.length()) / rhv == 0) lhv.subInt(rhv.length() + 1)
+//        else lhv.subInt(rhv.length())
+//    }
+//    var previousDiv1Line = ""
+//    var previousDiv2Line = ""
+//    var div1Line = ""
+//    var div2Line = ""
+//    var delimiterLine = ""
+//
+//    var div2 = div1 - div1 % rhv
+//    divs1.add(div1)
+//    divs2.add(div2)
+//    var remainder = div1 - div2
+//    val firstHalf = "-${div2}"
+//    val secondHalf = " ".repeat(4 + lhv.length() - firstHalf.length) + result.toString()
+//    bw.writeln(firstHalf + secondHalf)
+//    bw.writeln("-".repeat(firstHalf.length))
+//    var prefix = " ".repeat(firstHalf.length - remainder.length())  // spaces at the start of the line
+//    var i = div2.length()
+//    bw.write(prefix + remainder)
+//    if (i < lhv.length()) {
+//        bw.writeln(digits[i].toString())
+//        div1Line = prefix + remainder + digits[i].toString()
+//    }
+//
+//    var needExtraDigit: Boolean
+//
+//
+//    while (i < lhv.length()) {
+//        div1 = remainder * 10 + digits[i]
+//        div2 = div1 - div1 % rhv
+//        needExtraDigit = div2 == 0 && div1 != 0
+//        previousDiv2Line = div2Line
+//        div2Line = "${prefix.dropLast(1)}-${div2}"
+//        val nsfw = div1Line.length > div2Line.length // check if divSecond needs extra space
+//        if (nsfw) div2Line = " $div2Line"
+//        delimiterLine = if (nsfw) prefix + "-".repeat(div2.length() + 1)
+//        else prefix.dropLast(1) + "-".repeat(div2.length() + 1)
+//
+//        bw.writeln(div2Line)
+//        bw.writeln(delimiterLine)
+//        i++
+//
+//        if (!needExtraDigit) prefix = " ".repeat(div2Line.length - 1)
+//        else if ()
+//        println("$div2Line$prefix")
+//        remainder = div1 - div2
+//        bw.write(prefix + remainder)
+//
+//        if (i < lhv.length()) {
+//            bw.writeln(digits[i].toString())
+//            previousDiv1Line = div1Line
+//            div1Line = prefix + remainder + digits[i].toString()
+//        } else break
+//
+//
+//    }
+//    bw.flush()
+//    bw.close()
 }
 
 fun Int.subInt(startIndex: Int, endIndex: Int): Int {
-    val digits = this.listOfDigits().reversed()
+    val digits = this.digits().reversed()
     var result = 0
     for (i in startIndex until endIndex) {
         result += digits[i]
@@ -529,6 +640,7 @@ fun Int.subInt(startIndex: Int, endIndex: Int): Int {
     }
     return result / 10
 }
+
 fun Int.subInt(endIndex: Int) = this.subInt(0, endIndex)
 
 fun BufferedWriter.writeln(string: String) {
@@ -543,5 +655,6 @@ fun List<Int>.toInt(): Int {
     }
     return result
 }
-fun Int.decompose(): List<Int> = listOfDigits().toMutableList()
+
+fun Int.decompose(): List<Int> = digits().toMutableList()
     .mapIndexed { index, i -> i * 10.toDouble().pow(index).toInt() }.reversed()
