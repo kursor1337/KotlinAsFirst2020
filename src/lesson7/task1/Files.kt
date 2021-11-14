@@ -448,58 +448,71 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
    -132
    ----
       3
-
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val bw = File(outputName).bufferedWriter()
-    val res = lhv / rhv
+    val result = lhv / rhv
+    val digits = lhv.listOfDigits().reversed()
 
     bw.write(" $lhv | $rhv")
     bw.newLine()
-
     // temp int to store first division (198 in example)
-    val temp = if (lhv < rhv) lhv
+    // function Int.length() from lesson 4
+    var div1 = if (lhv < rhv) lhv
     else {
         if (lhv.subInt(rhv.length()) / rhv == 0) lhv.subInt(rhv.length() + 1)
         else lhv.subInt(rhv.length())
     }
+    var div1Line = ""
+    var div2Line = ""
+    var delimiterLine = ""
 
-    val firstHalf = "-${temp - temp % rhv}"
-    val secondHalf = " ".repeat(4 + lhv.length() - firstHalf.length) + res.toString()
+    var div2 = div1 - div1 % rhv
+    var remainder = div1 - div2
+    val firstHalf = "-${div2}"
+    val secondHalf = " ".repeat(4 + lhv.length() - firstHalf.length) + result.toString()
     bw.writeln(firstHalf + secondHalf)
     bw.writeln("-".repeat(firstHalf.length))
-
-    var prefix = " ".repeat(firstHalf.length - 2)  // spaces at the start of the line
-    var remainder = lhv - rhv * res.decompose()[0]
-    var needExtraDigit = false
-    var i = 1
-    while (remainder / rhv != 0) {
-        val divFirst = if (needExtraDigit) remainder.subInt(rhv.length() + 1)
-        else remainder.subInt(rhv.length())
-        val divSecond = divFirst - divFirst % rhv
-        needExtraDigit = divSecond == 0
-        val nsfw = divFirst.length() - divSecond.length() == 1 // check if divSecond needs extra space
-        println(divFirst.length() - divSecond.length())
-        bw.writeln("$prefix $divFirst")
-        bw.writeln(
-            if (nsfw) "$prefix -${divSecond}"
-            else "$prefix-${divSecond}"
-        )
-        bw.writeln(
-            prefix +
-                    if (nsfw) " " + "-".repeat(divSecond.length() + 1)
-                    else "-".repeat(divSecond.length() + 1)
-        )
-        if (!needExtraDigit) {
-            val dif = divFirst - divSecond
-            prefix += if (dif != 0) " ".repeat(divFirst.length() - dif.length())
-            else " "
-        }
-        remainder -= rhv * res.decompose()[i++]
+    var prefix = " ".repeat(firstHalf.length - 1)  // spaces at the start of the line
+    var i = div2.length()
+    bw.write(prefix + remainder)
+    if (i < lhv.length()) {
+        bw.writeln(digits[i].toString())
+        div1 = remainder * 10 + digits[i]
+        div1Line = prefix + remainder + digits[i].toString()
     }
-    bw.write("$prefix $remainder")
+
+    var needExtraDigit = false
+
+
+
+    while (i < lhv.length()) {
+        div1 = remainder * 10 + digits[i]
+        div2 = div1 - div1 % rhv
+        needExtraDigit = div2 == 0
+
+        div2Line = "${prefix.dropLast(1)}-${div2}"
+        val nsfw = div1Line.length > div2Line.length // check if divSecond needs extra space
+        if (nsfw) div2Line = " $div2Line"
+        println("$div1Line \n $div2Line")
+        delimiterLine = if (nsfw) prefix + "-".repeat(div2.length() + 1)
+        else prefix.dropLast(1) + "-".repeat(div2.length() + 1)
+        if (!needExtraDigit) prefix = " ".repeat(div2Line.length - 1)
+        bw.writeln(div2Line)
+        bw.writeln(delimiterLine)
+        i++
+        remainder = div1 - div2
+        bw.write(prefix + remainder)
+
+        if (i < lhv.length()) {
+            bw.writeln(digits[i].toString())
+            div1Line = prefix + remainder + digits[i].toString()
+        } else break
+
+
+    }
     bw.flush()
     bw.close()
 }
@@ -520,5 +533,111 @@ fun BufferedWriter.writeln(string: String) {
     newLine()
 }
 
+fun List<Int>.toInt(): Int {
+    var result = 0
+    reversed().forEachIndexed { index, i ->
+        result += i * 10.toDouble().pow(index).toInt()
+    }
+    return result
+}
 fun Int.decompose(): List<Int> = listOfDigits().toMutableList()
     .mapIndexed { index, i -> i * 10.toDouble().pow(index).toInt() }.reversed()
+
+
+private fun makeDivisor(remainderNumber: Int, tab: Int): String {
+    return assemblyString(tab, ' ') + assemblyString(calculateDigit(remainderNumber), '-')
+}
+
+private fun calculateDigit(algebra: Int): Int {
+    return Math.log10(algebra.toDouble()).toInt() + 1
+}
+
+private fun assemblyString(numberOfSymbols: Int, symbol: Char): String {
+    val string = StringBuilder()
+    for (i in 0 until numberOfSymbols) {
+        string.append(symbol)
+    }
+    return string.toString()
+}
+
+class Division {
+    private val result = StringBuilder()
+    private val quotient = StringBuilder()
+    private val remainder = StringBuilder()
+    fun makeDivision(dividend: Int, divisor: Int): String {
+        var dividend = dividend
+        var divisor = divisor
+        require(divisor != 0) { "Can not divide by zero" }
+        dividend = Math.abs(dividend)
+        divisor = Math.abs(divisor)
+        val oneByOne = ""
+        val digits = dividend.toString().split(oneByOne.toRegex()).toTypedArray()
+        var remainderNumber: Int
+        var multiplyResult: Int
+        val divisorDigit = calculateDigit(divisor)
+        var mod: Int
+        for (i in digits.indices) {
+            remainder.append(digits[i])
+            remainderNumber = remainder.toString().toInt()
+            if (remainderNumber >= divisor) {
+                mod = remainderNumber % divisor
+                multiplyResult = remainderNumber / divisor * divisor
+                val lastRemainder = String.format("%" + (i + 2) + "s", "_$remainderNumber")
+                result.append(lastRemainder).append("\n")
+                val multiply = String.format("%" + (i + 2) + "d", multiplyResult)
+                result.append(multiply).append("\n")
+                val tab = lastRemainder.length - calculateDigit(multiplyResult)
+                result.append(makeDivisor(remainderNumber, tab)).append("\n")
+                quotient.append(remainderNumber / divisor)
+                remainder.replace(0, remainder.length, mod.toString())
+                remainderNumber = remainder.toString().toInt()
+            } else {
+                if (i >= divisorDigit) {
+                    quotient.append(0)
+                }
+            }
+            if (i == digits.size - 1) {
+                result.append(String.format("%" + (i + 2) + "s", remainderNumber.toString())).append("\n")
+            }
+        }
+        modifyResultToView(dividend, divisor)
+        return result.toString()
+    }
+
+    private fun makeDivisor(remainderNumber: Int, tab: Int): String {
+        return assemblyString(tab, ' ') + assemblyString(calculateDigit(remainderNumber), '-')
+    }
+
+    private fun modifyResultToView(dividend: Int, divisor: Int) {
+        val index = IntArray(3)
+        var i = 0
+        var j = 0
+        while (i < result.length) {
+            if (result[i] == '\n') {
+                index[j] = i
+                j++
+            }
+            if (j == 3) {
+                break
+            }
+            i++
+        }
+        val tab = calculateDigit(dividend) + 1 - index[0]
+        result.insert(index[2], assemblyString(tab, ' ') + "│" + quotient.toString())
+        result.insert(index[1], assemblyString(tab, ' ') + "│" + assemblyString(quotient.length, '-'))
+        result.insert(index[0], "│$divisor")
+        result.replace(1, index[0], dividend.toString())
+    }
+
+    private fun calculateDigit(algebra: Int): Int {
+        return Math.log10(algebra.toDouble()).toInt() + 1
+    }
+
+    private fun assemblyString(numberOfSymbols: Int, symbol: Char): String {
+        val string = StringBuilder()
+        for (i in 0 until numberOfSymbols) {
+            string.append(symbol)
+        }
+        return string.toString()
+    }
+}
