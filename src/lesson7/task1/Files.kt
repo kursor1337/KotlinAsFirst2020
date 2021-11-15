@@ -496,7 +496,6 @@ fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
 
     // returns startIndex
     fun printIntInMatrixByEndIndex(n: Int, row: Int, endIndex: Int, addMinus: Boolean = false): Int {
-        println(n)
         for ((index, digit) in n.digits().withIndex()) {
             matrix[row][endIndex - index] = digit.toString()
         }
@@ -522,8 +521,10 @@ fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
 
     printIntInMatrix(dividend, 0, 1)
     var div2 = quotientDigits[0] * divisor
-    var div1 = if (div2 != 0) dividend.subInt(div2.length())
-    else dividend
+    var div1 = if (div2 != 0) {
+        if (dividend.subInt(div2.length()) < div2) dividend.subInt(div2.length() + 1)
+        else dividend.subInt(div2.length())
+    } else dividend
     printIntInMatrixByEndIndex(div2, 1, div1.length(), addMinus = true)
     var remIndex = printInMatrix(
         "-".repeat(maxOf(div2.length() + 1, div1.length())),
