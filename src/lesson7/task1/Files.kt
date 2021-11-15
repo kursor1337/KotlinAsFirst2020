@@ -522,7 +522,8 @@ fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
 
     printIntInMatrix(dividend, 0, 1)
     var div2 = quotientDigits[0] * divisor
-    var div1 = dividend.subInt(div2.length())
+    var div1 = if (div2 != 0) dividend.subInt(div2.length())
+    else dividend
     printIntInMatrixByEndIndex(div2, 1, div1.length(), addMinus = true)
     var remIndex = printInMatrix(
         "-".repeat(maxOf(div2.length() + 1, div1.length())),
@@ -550,22 +551,37 @@ fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
 
     val bw = File(outputName).bufferedWriter()
 
+    var hasUselessSpaces = true
+    matrix.forEach {
+        if (it[0] != " ") {
+            hasUselessSpaces = false
+            return@forEach
+        }
+    }
+
     matrix.forEachIndexed { index, array ->
         when (index) {
             0 -> {
-                for (i in array) bw.write(i)
+                for ((i, c) in array.withIndex()) {
+                    if (hasUselessSpaces && i == 0) continue
+                    bw.write(c)
+                }
                 bw.writeln(" | $divisor")
             }
             1 -> {
-                for (i in array) bw.write(i)
+                for ((i, c) in array.withIndex()) {
+                    if (hasUselessSpaces && i == 0) continue
+                    bw.write(c)
+                }
                 bw.writeln("   $quotient")
             }
             else -> {
                 var printedLine = false
-                for (i in array) {
-                    if (printedLine && i == " ") break
-                    if (i != " ") printedLine = true
-                    bw.write(i)
+                for ((i, c) in array.withIndex()) {
+                    if (hasUselessSpaces && i == 0) continue
+                    if (printedLine && c == " ") break
+                    if (c != " ") printedLine = true
+                    bw.write(c)
                 }
                 bw.newLine()
             }
