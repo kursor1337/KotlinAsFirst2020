@@ -172,7 +172,7 @@ fun mostExpensive(description: String): String {
         val productPrice = parts[i].split(" ")
         if (productPrice.size != 2) return ""
         try {
-            productPrice[1].toDouble()
+            productPrice[1].toDoubleOrNull()
         } catch (e: NumberFormatException) {
             return ""
         }
