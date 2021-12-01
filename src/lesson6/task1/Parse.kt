@@ -170,12 +170,7 @@ fun mostExpensive(description: String): String {
     var maxKey = ""
     for (i in parts.indices) {
         val productPrice = parts[i].split(" ")
-        if (productPrice.size != 2) return ""
-        try {
-            productPrice[1].toDoubleOrNull()
-        } catch (e: NumberFormatException) {
-            return ""
-        }
+        if (productPrice.size != 2 || productPrice[1].toDoubleOrNull() == null) return ""
         if (productPrice[1].toDouble() >= 0.0)
             mapOfProducts[productPrice[0]] = productPrice[1].toDouble()
         else return ""
