@@ -296,7 +296,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         "*" to ("<i>" to "</i>"),
         "~~" to ("<s>" to "</s>")
     )
-    var writer = File(inputName).readText()
+    var writer = File(inputName).readText().trim()
     for ((key, value) in mapOfSymbols) {
         writer = writer.split(key).withIndex()
             .joinToString("") { if (it.index % 2 == 0) it.value else "${value.first}${it.value}${value.second}" }
