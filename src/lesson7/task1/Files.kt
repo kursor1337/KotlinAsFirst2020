@@ -303,48 +303,50 @@ val edHtmlMap = mapOf(
 //<<html><body><p>Loremipsum<i>dolorsitamet</i>,consectetur<b>adipiscing</b>elit.Vestibulumlobortis.<s>Estvehicularutrum<i>suscipit</i></s>,ipsum<s>lib</s>ero<i>placerat<b>tortor</b></i>.</p><p>Suspendisse<s>etelitinenimtempusiaculis</s>.</p><p></p></body></html>>
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    var text = File(inputName).readText()
-    if (text.startsWith("\n\n")) text.removePrefix("\n\n")
-    if(text.endsWith("\n\n")) text.removeSuffix("\n\n")
+    val lines = File(inputName).readLines()
     val stack = Stack<String>()
     var buffer = ""
+
+    val sb = StringBuilder()
 
     fun process(char: Char) {
         if (opHtmlMap[buffer] != null && opHtmlMap[buffer + char.toString()] == null) {
             if (stack.isEmpty() || stack.last() != opHtmlMap[buffer]) {
                 stack.add(opHtmlMap[buffer])
-                text = text.replaceFirst(buffer, opHtmlMap[buffer]!!, ignoreCase = true)
+                sb.append(opHtmlMap[buffer]!!)
                 buffer = if (char == '~' || char == '*') {
                     char.toString()
-                } else ""
+                } else {
+                    sb.append(char)
+                    ""
+                }
             } else {
                 stack.pop()
-                text = text.replaceFirst(buffer, edHtmlMap[buffer]!!, ignoreCase = true)
+                sb.append(edHtmlMap[buffer]!!)
                 buffer = if (char == '~' || char == '*') {
                     char.toString()
-                } else ""
+                } else {
+                    sb.append(char)
+                    ""
+                }
             }
         } else {
             buffer += if (char == '~' || char == '*') {
                 char.toString()
-            } else ""
+            } else {
+                sb.append(char)
+                ""
+            }
         }
     }
 
-    for (char in text) process(char)
+    for (line in lines) {
+        if (line.isBlank()) sb.append("</p><p>")
+        for (char in line) process(char)
+    }
+    val text = "<p>${sb}</p>"
 
-
-//    val lines = text.lines().toMutableList()
-//    for (i in lines.indices) {
-//        if (lines[i].isBlank()) lines[i] = "</p><p>"
-//    }
-//    val sb = StringBuilder()
-//    lines.forEach { sb.append(it) }
-//    text = sb.toString()
-    text = "<p>$text</p>"
-    text = text.replace(Regex("\\n[\\n]+|\\n\\s+\\n"), "</p><p>")
-
-
+//    text = text.replace(Regex("\\n\\n+|\\n\\s+\\n"), "</p><p>")
     val bw = File(outputName).bufferedWriter()
     bw.write("<html><body>")
     bw.write(text)
