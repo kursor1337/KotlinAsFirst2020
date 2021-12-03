@@ -330,7 +330,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     for (char in text) process(char)
 
 
-    text.replace(Regex("\\n\\n|\\n\\s+\\n"), "</p><p>")
+    text.replace(Regex("(\\n\\n|\\n\\s+\\n)"), "</p><p>")
     text = "<p>$text</p>"
 
 
