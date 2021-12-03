@@ -300,6 +300,9 @@ val edHtmlMap = mapOf(
 
 )
 
+//"<html><body><p>n<i>fH)<b>(</b>cG<b>%zu{W<s>Vs_zy(</s>Y|{<s>/pCTEh%</s>|JDF&<s>,`n)</s>65^</b>tQ<s>_u\\</s>77Q%<s>Kpi!F'MtR</s>!8i3</i>u@2bq/tY]]|<s>V<b>VsO</b>DRt=A0rab</s>M?'Ie<s>]`$RTY\"vMc{$</s>1F'diC?pwDNqi!d{MR%nFts-Bs?<b>z^AS=W1U6{e(c&|bG76G;BB\"'^3.nx|u`0zzqFp2F@?dQ.F5b$0&crQ{3(+c(</b>!{4S<s>#=N^9\\([oX/ch:}md(-rF1rFr9T0T,-Ecbbr|8QA1`k</s>?_!kyYlq=af;iDNI!_RXL%<i>\"eOZmB<s>Z|'V4)!E6X;O5`<b>&:Y</b>ugm}<b>9yHB</b>6c}5])<b>cR</b>R!!7P4Yft</s>E52/vzSA<s>2SQ6U</s>CNu<b>1vRN!</b>$<b>g<s>)'|HH{</s>RmK)eDO[:zgsT8=FRZ</b>n#14#g@#<s>x<b>V</b>|+kS8</s>ik#N%)@6bq<b>)0Pb{'$CQm]is\\l<s>=</s><s>2Q3M</s>Xf</b>K:<b>n.Lj</b></i>?&=UW\\/se3&,Z}<s><i></i>P<i>f]</i>1?+\"ZYD<b>#u<i></i>syWjq</b>[0]wRp1})<b></b>s<i>=f#Pj+</i>-qf<b>F[<i>i/T</i>9=C{WY`;/e<i>{md)</i>;eB</b>9<b>u:</b>g<i>\"eEOQapX<b>(sf</b><b>KWgz</b>_^pzaO]\":A#O</i></s>8Cn{BMT:3}\\Q,-^t:B#U)_Ef;L5uK'<i>vy3E7D=V</i>z:|Ul</p></body></html>"
+//"<html><body><p>n<i>fH)<b>(</b>cG<b>%zu{W<s>Vs_zy(</s>Y|{<s>/pCTEh%</s>|JDF&<s>,`n)</s>65^</b>tQ<s>_u\\</s>77Q%<s>Kpi!F'MtR</s>!8i3</i>u@2bq/tY]]|<s>V<b>VsO</b>DRt=A0rab</s>M?'Ie<s>]`$RTY\"vMc{$</s>1F'diC?pwDNqi!d{MR%nFts-Bs?<b>z^AS=W1U6{e(c&|bG76G;BB\"'^3.nx|u`0zzqFp2F@?dQ.F5b$0&crQ{3(+c(</b>!{4S<s>#=N^9\\([oX/ch:}md(-rF1rFr9T0T,-Ecbbr|8QA1`k</s>?_!kyYlq=af;iDNI!_RXL%<i>\"eOZmB<s>Z|'V4)!E6X;O5`<b>&:Y</b>ugm}<b>9yHB</b>6c}5])<b>cR</b>R!!7P4Yft</s>E52/vzSA<s>2SQ6U</s>CNu<b>1vRN!</b>$<b>g<s>)'|HH{</s>RmK)eDO[:zgsT8=FRZ</b>n#14#g@#<s>x<b>V</b>|+kS8</s>ik#N%)@6bq<b>)0Pb{'$CQm]is\\l<s>=</s><s>2Q3M</s>Xf</b>K:<b>n.Lj</b></i>?&=UW\\/se3&</p><p>,</p><p>Z}<s><i></i>P<i>f]</i>1?+\"ZYD<b>#u<i></i>syWjq</b>[0]wRp1})<b></b>s<i>=f#Pj+</i>-qf<b>F[<i>i/T</i>9=C{WY`;/e<i>{md)</i>;eB</b>9<b>u:</b>g<i>\"eEOQapX<b>(sf</b><b>KWgz</b>_^pzaO]\":A#O</i></s>8Cn{BMT:3}\\Q,-^t:B#U)_Ef;L5uK'<i>vy3E7D=V</i>z:|Ul</p></body></html>"
+
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var text = File(inputName).readText().replace("  ", " ")
     val stack = Stack<String>()
@@ -329,7 +332,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
     for (char in text) process(char)
 
-    val paragraphs = text.split(Regex("\\r\\n\\r\\n|\\n\\n\\n\\n|\\n\\r\\n\\r"))
+    val paragraphs = text.split(Regex("\\r\\n\\s+\\r\\n|\\n\\n\\s+\\n\\n"))
     text = ""
     paragraphs.forEach {
         text += "<p>$it</p>"
@@ -586,7 +589,7 @@ fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
         minOf(indexOfSmth(0), indexOfSmth(1))
     )
     var rem = div1 - div2
-    val offset = div2.length() - 1
+    val offset = indexOfSmth(1) + div2.length() - 1
 
     for (i in 1 until quotient.length()) {
         printIntInMatrixByEndIndex(rem, 3 * i, remIndex)
