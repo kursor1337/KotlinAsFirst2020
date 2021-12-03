@@ -340,7 +340,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 //    lines.forEach { sb.append(it) }
 //    text = sb.toString()
     text = "<p>$text</p>"
-    text = text.replace(Regex("\\n\\n|\\n\\s+\\n"), "</p><p>")
+    text = text.replace(Regex("\\n[\\n]+|\\n\\s+\\n"), "</p><p>")
 
 
     val bw = File(outputName).bufferedWriter()
