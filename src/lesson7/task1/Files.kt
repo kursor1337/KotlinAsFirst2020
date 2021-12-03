@@ -332,7 +332,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
     for (char in text) process(char)
 
-    val paragraphs = text.split(Regex("\\r\\n\\s+\\r\\n|\\n\\n\\s+\\n\\n"))
+    val paragraphs = text.split(Regex("\\r\\s+\\n|\\n\\s+\\n"))
     text = ""
     paragraphs.forEach {
         text += "<p>$it</p>"
