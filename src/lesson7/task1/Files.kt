@@ -330,13 +330,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     for (char in text) process(char)
 
 
-    val lines = text.lines().toMutableList()
-    for (i in lines.indices) {
-        if (lines[i].isBlank()) lines[i] = "</p><p>"
-    }
-    val sb = StringBuilder()
-    lines.forEach { sb.append(it) }
-    text = sb.toString()
+    text.replace(Regex("\\n\\n|\\n\\s+\\n"), "</p><p>")
     text = "<p>$text</p>"
 
 
