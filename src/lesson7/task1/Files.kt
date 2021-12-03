@@ -329,20 +329,16 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
     for (char in text) process(char)
 
-    var needToClosePar = false
+
     val lines = text.lines().toMutableList()
     for (i in lines.indices) {
-        if (lines[i].isBlank()) {
-            lines[i] = "</p><p>"
-            needToClosePar = true
-        }
+        if (lines[i].isBlank()) lines[i] = "</p><p>"
     }
     val sb = StringBuilder()
     lines.forEach { sb.append(it) }
     text = sb.toString()
-    if (needToClosePar) {
-        text = "<p>$text</p>"
-    }
+    text = "<p>$text</p>"
+
 
     val bw = File(outputName).bufferedWriter()
     bw.write("<html><body>")
