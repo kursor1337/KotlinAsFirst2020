@@ -303,7 +303,9 @@ val edHtmlMap = mapOf(
 //<<html><body><p>Loremipsum<i>dolorsitamet</i>,consectetur<b>adipiscing</b>elit.Vestibulumlobortis.<s>Estvehicularutrum<i>suscipit</i></s>,ipsum<s>lib</s>ero<i>placerat<b>tortor</b></i>.</p><p>Suspendisse<s>etelitinenimtempusiaculis</s>.</p><p></p></body></html>>
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    var text = File(inputName).readText().trimIndent()
+    var text = File(inputName).readText()
+    if (text.startsWith("\n\n")) text.removePrefix("\n\n")
+    if(text.endsWith("\n\n")) text.removeSuffix("\n\n")
     val stack = Stack<String>()
     var buffer = ""
 
