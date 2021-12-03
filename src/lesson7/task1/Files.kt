@@ -299,6 +299,8 @@ val edHtmlMap = mapOf(
     "~~" to "</s>",
 
 )
+//<<html><body><p>Loremipsum<i>dolorsitamet</i>,consectetur<b>adipiscing</b>elit.Vestibulumlobortis.<s>Estvehicularutrum<i>suscipit</i></s>,ipsum<s>lib</s>ero<i>placerat<b>tortor</b></i>.</p><p>Suspendisse<s>etelitinenimtempusiaculis</s>.</p></body></html>>
+//<<html><body><p>Loremipsum<i>dolorsitamet</i>,consectetur<b>adipiscing</b>elit.Vestibulumlobortis.<s>Estvehicularutrum<i>suscipit</i></s>,ipsum<s>lib</s>ero<i>placerat<b>tortor</b></i>.</p><p>Suspendisse<s>etelitinenimtempusiaculis</s>.</p><p></p></body></html>>
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var text = File(inputName).readText()
@@ -330,13 +332,13 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     for (char in text) process(char)
 
 
-    val lines = text.lines().toMutableList()
-    for (i in lines.indices) {
-        if (lines[i].isBlank()) lines[i] = "</p><p>"
-    }
-    val sb = StringBuilder()
-    lines.forEach { sb.append(it) }
-    text = sb.toString()
+//    val lines = text.lines().toMutableList()
+//    for (i in lines.indices) {
+//        if (lines[i].isBlank()) lines[i] = "</p><p>"
+//    }
+//    val sb = StringBuilder()
+//    lines.forEach { sb.append(it) }
+//    text = sb.toString()
     text = "<p>$text</p>"
     text = text.replace(Regex("\\n\\n|\\n\\s+\\n"), "</p><p>")
 
