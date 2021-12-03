@@ -6,6 +6,8 @@ import lesson3.task1.length
 import lesson4.task1.digits
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.StringBuilder
+import java.util.*
 import kotlin.math.pow
 
 // Урок 7: работа с файлами
@@ -285,8 +287,60 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+
+val opHtmlMap = mapOf(
+    "**" to "<b>",
+    "*" to "<i>",
+    "~~" to "<s>"
+)
+val edHtmlMap = mapOf(
+    "**" to "</b>",
+    "*" to "</i>",
+    "~~" to "</s>",
+
+)
+
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    var text = File(inputName).readText().replace("  ", " ")
+    val stack = Stack<String>()
+    var buffer = ""
+
+    fun process(char: Char) {
+        if (opHtmlMap[buffer] != null && opHtmlMap[buffer + char.toString()] == null) {
+            if (stack.isEmpty() || stack.last() != opHtmlMap[buffer]) {
+                stack.add(opHtmlMap[buffer])
+                text = text.replaceFirst(buffer, opHtmlMap[buffer]!!, ignoreCase = true)
+                buffer = if (char == '~' || char == '*') {
+                    char.toString()
+                } else ""
+            } else {
+                stack.pop()
+                text = text.replaceFirst(buffer, edHtmlMap[buffer]!!, ignoreCase = true)
+                buffer = if (char == '~' || char == '*') {
+                    char.toString()
+                } else ""
+            }
+        } else {
+            buffer += if (char == '~' || char == '*') {
+                char.toString()
+            } else ""
+        }
+    }
+
+    for (char in text) process(char)
+
+    val paragraphs = text.split(Regex("\r\n[\r\n]+"))
+    text = ""
+    paragraphs.forEach {
+        text += "<p>$it</p>"
+    }
+
+    val bw = File(outputName).bufferedWriter()
+    bw.write("<html><body>")
+    bw.write(text)
+    bw.write("</body></html>")
+    bw.flush()
+    bw.close()
 }
 
 /**
@@ -438,16 +492,16 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
- 19935 | 22
+19935 | 22
 -198     906
 ----
-   13
-   -0
-   --
-   135
-  -132
-  ----
-     3
+13
+-0
+--
+135
+-132
+----
+3
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
