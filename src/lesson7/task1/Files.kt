@@ -8,7 +8,6 @@ import java.io.BufferedWriter
 import java.io.File
 import java.lang.StringBuilder
 import java.util.*
-import kotlin.math.pow
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -341,9 +340,16 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
     }
 
+    var previousIsABlankLine = false
     for (line in lines) {
-        if (line.isBlank()) sb.append("</p><p>")
-        for (char in line) process(char)
+        if (line.isBlank()&& !previousIsABlankLine) {
+            sb.append("</p><p>")
+            previousIsABlankLine = true
+        }
+        else {
+            for (char in line) process(char)
+            previousIsABlankLine = false
+        }
     }
     val text = "<p>${sb}</p>"
 
