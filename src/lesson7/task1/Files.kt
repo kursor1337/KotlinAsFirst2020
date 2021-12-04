@@ -299,7 +299,8 @@ val edHtmlMap = mapOf(
 )
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    var text = File(inputName).readText().replace(Regex("\\n\\n[\\n]+"), "\n\n")
+    var text = File(inputName).readText().replace(Regex("\\n\\s+\\n"), "\n\n")
+        .replace(Regex("\\n\\n[\\n]+"), "\n\n")
     val stack = Stack<String>()
     var buffer = ""
     val sb = StringBuilder()
