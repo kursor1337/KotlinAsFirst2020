@@ -296,17 +296,12 @@ val edHtmlMap = mapOf(
     "**" to "</b>",
     "*" to "</i>",
     "~~" to "</s>",
-
 )
-//<<html><body><p>Loremipsum<i>dolorsitamet</i>,consectetur<b>adipiscing</b>elit.Vestibulumlobortis.<s>Estvehicularutrum<i>suscipit</i></s>,ipsum<s>lib</s>ero<i>placerat<b>tortor</b></i>.</p><p>Suspendisse<s>etelitinenimtempusiaculis</s>.</p></body></html>>
-//<<html><body><p>Loremipsum<i>dolorsitamet</i>,consectetur<b>adipiscing</b>elit.Vestibulumlobortis.<s>Estvehicularutrum<i>suscipit</i></s>,ipsum<s>lib</s>ero<i>placerat<b>tortor</b></i>.</p><p>Suspendisse<s>etelitinenimtempusiaculis</s>.</p><p></p></body></html>>
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val lines = File(inputName).readText().trimIndent().lines()
-
+    var text = File(inputName).readText().replace(" ", "")
     val stack = Stack<String>()
     var buffer = ""
-
     val sb = StringBuilder()
 
     fun process(char: Char) {
@@ -314,43 +309,46 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             if (stack.isEmpty() || stack.last() != opHtmlMap[buffer]) {
                 stack.add(opHtmlMap[buffer])
                 sb.append(opHtmlMap[buffer]!!)
-                buffer = if (char == '~' || char == '*') {
-                    char.toString()
-                } else {
-                    sb.append(char)
-                    ""
-                }
             } else {
                 stack.pop()
                 sb.append(edHtmlMap[buffer]!!)
-                buffer = if (char == '~' || char == '*') {
-                    char.toString()
-                } else {
-                    sb.append(char)
-                    ""
-                }
             }
-        } else {
-            buffer += if (char == '~' || char == '*') {
+            buffer = if (char == '~' || char == '*') {
                 char.toString()
             } else {
                 sb.append(char)
                 ""
             }
+        } else {
+            if (char == '~' || char == '*') {
+                buffer += char.toString()
+            } else {
+                sb.append(char)
+            }
         }
     }
 
-    var previousIsABlankLine = false
-    for (line in lines) {
-        if (line.isBlank() && !previousIsABlankLine) {
-            sb.append("</p><p>")
-            previousIsABlankLine = true
-        } else for (char in line) {
-            process(char)
-            previousIsABlankLine = false
-        }
+
+    for (char in text) {
+//        if (line.isBlank() && !previousIsABlankLine) {
+//            sb.append("</p><p>")
+//            previousIsABlankLine = true
+//        } else for (char in line) {
+        process(char)
+        //previousIsABlankLine = false
+//        }
     }
-    val text = "<p>${sb}</p>"
+    text = "<p>${sb}</p>"
+    sb.clear()
+    var previousIsABlankLine = false
+    for (line in text.lines()) {
+        if (line.isNotBlank()) {
+            sb.append(line)
+            previousIsABlankLine = false
+        } else if (!previousIsABlankLine) sb.append("</p><p>")
+    }
+    text = sb.toString()
+    print(text)
 
 //    text = text.replace(Regex("\\n\\n+|\\n\\s+\\n"), "</p><p>")
     val bw = File(outputName).bufferedWriter()
