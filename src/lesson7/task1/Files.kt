@@ -299,7 +299,7 @@ val edHtmlMap = mapOf(
 )
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    var text = File(inputName).readText().replace(" ", "")
+    var text = File(inputName).readText()
     val stack = Stack<String>()
     var buffer = ""
     val sb = StringBuilder()
