@@ -342,13 +342,12 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
     var previousIsABlankLine = false
     for (line in lines) {
-        for (char in line) {
-            process(char)
-            previousIsABlankLine = false
-        }
-        if (line.isBlank()&& !previousIsABlankLine) {
+        if (line.isBlank() && !previousIsABlankLine) {
             sb.append("</p><p>")
             previousIsABlankLine = true
+        } else for (char in line) {
+            process(char)
+            previousIsABlankLine = false
         }
     }
     val text = "<p>${sb}</p>"
