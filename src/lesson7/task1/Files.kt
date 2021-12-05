@@ -296,12 +296,13 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         "*" to ("<i>" to "</i>"),
         "~~" to ("<s>" to "</s>")
     )
-    var writer = File(inputName).readText().trim()
+    var writer =
+        File(inputName).readText().replace(Regex("\\n\\s+\\n"), "\n\n")
+            .replace(Regex("\\n\\t+\\n"), "\n\n").trim()
     for ((key, value) in mapOfSymbols) {
         writer = writer.split(key).withIndex()
             .joinToString("") { if (it.index % 2 == 0) it.value else "${value.first}${it.value}${value.second}" }
     }
-    writer.replace("\\s".toRegex(), "")
     writer = writer.split(Regex("(\r?\n){2,}")).joinToString("") { "<p>${it}</p>" }
     File(outputName).writeText(HTMLbody(writer))
 }
