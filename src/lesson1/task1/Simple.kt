@@ -2,6 +2,8 @@
 
 package lesson1.task1
 
+import java.lang.ArithmeticException
+import java.lang.IllegalArgumentException
 import kotlin.math.*
 
 // Урок 1: простые функции
@@ -130,4 +132,15 @@ fun numberRevert(number: Int): Int {
     val secondDigit = number % 100 / 10
     val thirdDigit = number % 10
     return thirdDigit * 100 + secondDigit * 10 + firstDigit
+}
+
+fun lastNameByPhonePrefix(phones: List<String>, prefix: String): List<String> {
+    val result = mutableListOf<String>()
+    val regex = Regex("\\d+\\s[а-яА-Яa-zA-Z]+")
+    phones.forEach { line ->
+        if (!regex.matches(line)) throw IllegalArgumentException()
+        val (phone, name) = line.split(" ")
+        if (phone.startsWith(prefix)) result.add(name)
+    }
+    return result
 }

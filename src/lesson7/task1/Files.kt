@@ -331,13 +331,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
 
     for (char in text) {
-//        if (line.isBlank() && !previousIsABlankLine) {
-//            sb.append("</p><p>")
-//            previousIsABlankLine = true
-//        } else for (char in line) {
         process(char)
-        //previousIsABlankLine = false
-//        }
     }
     text = "<p>${sb}</p>"
     sb.clear()
@@ -350,14 +344,14 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     }
     text = sb.toString()
     text.replace("</p><p></p>", "</p>")
+    File(outputName).bufferedWriter().use {
+        it.write("<html><body>")
+        it.write(text)
+        it.write("</body></html>")
+        it.flush()
+        it.close()
+    }
 
-//    text = text.replace(Regex("\\n\\n+|\\n\\s+\\n"), "</p><p>")
-    val bw = File(outputName).bufferedWriter()
-    bw.write("<html><body>")
-    bw.write(text)
-    bw.write("</body></html>")
-    bw.flush()
-    bw.close()
 }
 
 /**
