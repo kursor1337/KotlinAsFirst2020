@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.util.*
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -281,8 +282,9 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val HTMLbody = { body: String ->
+    val htmlBody = { body: String ->
         """
           <html>
             <body>
@@ -291,6 +293,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
           </html>
         """
     }
+    val stack = Stack<String>()
+    var storage = ""
+    val stringBuild = StringBuilder()
     val mapOfSymbols = mapOf(
         "**" to ("<b>" to "</b>"),
         "*" to ("<i>" to "</i>"),
@@ -299,12 +304,29 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var writer =
         File(inputName).readText().replace(Regex("\\n\\s+\\n"), "\n\n")
             .replace(Regex("\\n\\t+\\n"), "\n\n").trim()
-    for ((key, value) in mapOfSymbols) {
-        writer = writer.split(key).withIndex()
-            .joinToString("") { if (it.index % 2 == 0) it.value else "${value.first}${it.value}${value.second}" }
+    for (char in writer) {
+        if (mapOfSymbols[storage]?.first != null && mapOfSymbols[storage + char.toString()]?.first == null) {
+            if (stack.isEmpty() || stack.last() != mapOfSymbols[storage]?.first) {
+                stack.add(mapOfSymbols[storage]?.first)
+                stringBuild.append(mapOfSymbols[storage]?.first!!)
+            } else {
+                stack.pop()
+                stringBuild.append(mapOfSymbols[storage]?.second!!)
+            }
+            storage = if (char == '~' || char == '*') {
+                char.toString()
+            } else {
+                stringBuild.append(char)
+                ""
+            }
+        } else {
+            if (char == '~' || char == '*') {
+                storage += char.toString()
+            } else stringBuild.append(char)
+        }
     }
-    writer = writer.split(Regex("(\r?\n){2,}")).joinToString("") { "<p>${it}</p>" }
-    File(outputName).writeText(HTMLbody(writer))
+    writer = stringBuild.toString().split(Regex("(\r?\n){2,}")).joinToString("") { "<p>${it}</p>" }
+    File(outputName).writeText(htmlBody(writer))
 }
 
 /**
