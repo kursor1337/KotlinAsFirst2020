@@ -4,6 +4,8 @@ package lesson7.task1
 
 import java.io.File
 import java.util.*
+import lesson3.task1.digitNumber
+import kotlin.math.max
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -468,7 +470,36 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    var n = rhv
+    val answer = lhv * rhv
+    val maxLen = digitNumber(answer) + 1
+    val digits = mutableListOf<Int>()
+    val interCalc = mutableListOf<Int>()
+    var out = buildString {}
+    while (n > 0) {
+        digits.add(n % 10)
+        n /= 10
+    }
+    for (i in digits) {
+        interCalc += i * lhv
+    }
+    out += " ".repeat(maxLen - digitNumber(lhv)) + "$lhv\n" + '*' +
+            " ".repeat(maxLen - digitNumber(rhv) - 1) + "$rhv\n"
+    if (digitNumber(rhv) > 1) {
+        out += "-".repeat(maxLen) + "\n"
+        var j = 0
+        for (i in interCalc) {
+            out += if (j == 0) {
+                " "
+            } else "+"
+            j++
+            out += " ".repeat(maxLen - digitNumber(i) - j) + "$i\n"
+        }
+        out += "-".repeat(maxLen) + "\n" + " $answer\n"
+    } else {
+        out += ("-".repeat(maxLen) + "\n" + " $answer\n").repeat(2)
+    }
+    File(outputName).writeText(out)
 }
 
 
