@@ -303,8 +303,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         "~~" to ("<s>" to "</s>")
     )
     var writer =
-        File(inputName).readText().replace(Regex("\\n\\s+\\n"), "\n\n")
-            .replace(Regex("\\n\\t+\\n"), "\n\n").trim()
+        File(inputName).readText().replace(Regex("\\n\\s+\\n"), "\n\n").trim()
     for (char in writer) {
         if (mapOfSymbols[storage]?.first != null && mapOfSymbols[storage + char.toString()]?.first == null) {
             if (stack.isEmpty() || stack.last() != mapOfSymbols[storage]?.first) {
@@ -474,7 +473,6 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val maxLen = digitNumber(answer) + 1
     val digits = mutableListOf<Int>()
     val interCalc = mutableListOf<Int>()
-    var out = buildString {}
     while (n > 0) {
         digits.add(n % 10)
         n /= 10
@@ -482,21 +480,25 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     for (i in digits) {
         interCalc += i * lhv
     }
-    out += " ".repeat(maxLen - digitNumber(lhv)) + "$lhv\n" + '*' +
-            " ".repeat(maxLen - digitNumber(rhv) - 1) + "$rhv\n"
-    if (digitNumber(rhv) > 1) {
-        out += "-".repeat(maxLen) + "\n"
-        var j = 0
-        for (i in interCalc) {
-            out += if (j == 0) {
-                " "
-            } else "+"
-            j++
-            out += " ".repeat(maxLen - digitNumber(i) - j) + "$i\n"
+    val out = buildString {
+        append(
+            " ".repeat(maxLen - digitNumber(lhv)) + "$lhv\n" + '*' +
+                    " ".repeat(maxLen - digitNumber(rhv) - 1) + "$rhv\n"
+        )
+        if (digitNumber(rhv) > 1) {
+            append("-".repeat(maxLen) + "\n")
+            var j = 0
+            for (i in interCalc) {
+                if (j == 0) {
+                    append(" ")
+                } else append("+")
+                j++
+                append(" ".repeat(maxLen - digitNumber(i) - j) + "$i\n")
+            }
+            append("-".repeat(maxLen) + "\n" + " $answer\n")
+        } else {
+            append(("-".repeat(maxLen) + "\n" + " $answer\n").repeat(2))
         }
-        out += "-".repeat(maxLen) + "\n" + " $answer\n"
-    } else {
-        out += ("-".repeat(maxLen) + "\n" + " $answer\n").repeat(2)
     }
     File(outputName).writeText(out)
 }
