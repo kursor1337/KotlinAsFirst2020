@@ -27,7 +27,12 @@ git checkout  master
 ```
 мерджим
 ```
-git merge upstream-theirs/master
+git merge upstream-theirs/master backport
+```
+исправляем конфликты с vs code
+```
+git commit // коммитил через vs code
+git push
 ```
 заливаем все что нам выдает git remote -v в файл remotes
 ```
