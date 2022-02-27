@@ -262,6 +262,7 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
+
 /**
  * Сложная (6 баллов)
  *

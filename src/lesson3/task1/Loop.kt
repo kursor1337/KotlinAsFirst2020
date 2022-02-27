@@ -152,16 +152,19 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
+
 
 /**
- * Средняя (3 балла)
- *
- * Определить, являются ли два заданных числа m и n взаимно простыми.
- * Взаимно простые числа не имеют общих делителей, кроме 1.
- * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
+ * Функция находит НОД двух чисел
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun gcd(m: Int, n: Int): Int {
+    var div = 1
+    for (i in 2..min(m, n)) {
+        if (m % i == 0 && n % i == 0) div = i
+    }
+    return div
+}
 
 /**
  * Средняя (3 балла)
@@ -170,7 +173,17 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var num = n
+    var reversedNum = 0
+    while (num > 0) {
+        reversedNum = reversedNum * 10 + num % 10
+        num /= 10
+    }
+    return reversedNum
+
+}
+
 
 /**
  * Средняя (3 балла)
@@ -192,12 +205,12 @@ fun isPalindrome(n: Int): Boolean = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var number = n
-    while (number / 10 != 0) {
-        val digit = number % 10
-        if (digit == (number / 10) % 10) {
-            number /= 10
-        } else return true
+    var k = n
+    val digit = k % 10
+    k /= 10
+    while (k > 0) {
+        if (digit != k % 10) return true
+        k /= 10
     }
     return false
 }
@@ -233,26 +246,7 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
-    var countDigit = 0
-    var i = 1
-    while (true) {
-        sqr(i)
-        val sqrCountDigit = digitNumber(sqr(i))
-        countDigit += sqrCountDigit
-        if (countDigit >= n) break
-        i++
-    }
-    while (countDigit != n) {
-        var sequenceSqr = sqr(i)
-        for (j in 1..countDigit) {
-            sequenceSqr /= 10
-            countDigit -= 1
-            if (countDigit == n) return sequenceSqr % 10
-        }
-    }
-    return sqr(i) % 10
-}
+fun squareSequenceDigit(n: Int): Int = getNumberByIndexInSequence(n) { sqr(it) }
 
 /**
  * Сложная (5 баллов)
@@ -263,24 +257,40 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int {
-    var countDigit = 0
-    var i = 1
-    while (true) {
-        fib(i)
-        val fibCountDigit = digitNumber(fib(i))
-        countDigit += fibCountDigit
-        if (countDigit >= n) break
-        i++
+fun fibSequenceDigit(n: Int): Int = getNumberByIndexInSequence(n) { fib(it) }
+
+fun getNumberByIndexInSequence(n: Int, sequenceFunction: (Int) -> Int): Int {
+    var count = 0
+    var num = 1
+    var index = 0
+    var currentNum = sequenceFunction(num)
+    while (count + currentNum.length() < n) {
+        count += currentNum.length()
+        num++
+        currentNum = sequenceFunction(num)
+        index = count + currentNum.length() - n
     }
-    while (countDigit != n) {
-        var sequenceFib = fib(i)
-        for (j in 1..countDigit) {
-            sequenceFib /= 10
-            countDigit -= 1
-            if (countDigit == n) return sequenceFib % 10
-        }
-    }
-    return fib(i) % 10
+    return currentNum.fromRightDigitAt(index)
 }
 
+fun Int.fromRightDigitAt(n: Int): Int {
+    val nums = ArrayList<Int>()
+    var k = this
+    while (k > 0) {
+        nums.add(k % 10)
+        k /= 10
+    }
+    return nums[n]
+}
+
+fun Int.length(): Int {
+    if (this == 0) return 1
+    var k = 0
+    var num = this
+    while (num > 0) {
+        k += 1
+        num /= 10
+    }
+
+    return k
+}

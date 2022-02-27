@@ -4,6 +4,11 @@ package lesson7.task1
 
 import lesson3.task1.digitNumber
 import java.io.File
+import lesson3.task1.length
+import lesson4.task1.digits
+import java.io.BufferedWriter
+import java.io.File
+import java.lang.StringBuilder
 import java.util.*
 
 // Урок 7: работа с файлами
@@ -520,11 +525,167 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 -132
 ----
 3
+<<<<<<< HEAD
 
+=======
+>>>>>>> backport
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
-fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+
+/**
+ *  616995 | 2
+ * -6        308497
+ * --
+ *  01
+ *  -0
+ *  --
+ *   16
+ *  -16
+ *  ---
+ *   09
+ *   -8
+ *   --
+ *    19
+ *   -18
+ *   ---
+ *     15
+ *    -14
+ *    ---
+ *      1
+
+ */
+
+fun printDivisionProcess(dividend: Int, divisor: Int, outputName: String) {
+    val dividendDigits = dividend.digits().reversed()
+    val divisorDigits = divisor.digits().reversed()
+    val quotient = dividend / divisor
+    val quotientDigits = quotient.digits().reversed()
+    val remainder = dividend % divisor
+    val remainderDigits = remainder.digits().reversed()
+
+    val matrix = Array(3 * quotient.length() + 1) { Array(dividend.length() + 1) { " " } }
+
+    // prints some int in matrix
+    // returns endIndex
+    fun printIntInMatrix(n: Int, row: Int, startIndex: Int): Int {
+        for ((index, digit) in n.digits().reversed().withIndex()) {
+            matrix[row][startIndex + index] = digit.toString()
+        }
+        return startIndex + n.length() - 1
+    }
+
+    // returns startIndex
+    fun printIntInMatrixByEndIndex(n: Int, row: Int, endIndex: Int, addMinus: Boolean = false): Int {
+        for ((index, digit) in n.digits().withIndex()) {
+            matrix[row][endIndex - index] = digit.toString()
+        }
+        if (addMinus) {
+            matrix[row][endIndex - n.length()] = "-"
+            return endIndex - n.length()
+        }
+        return endIndex - n.length() + 1
+    }
+
+    // returns endIndex
+    fun printInMatrix(string: String, row: Int, startIndex: Int): Int {
+        string.forEachIndexed { index, c ->
+            matrix[row][startIndex + index] = c.toString()
+        }
+        return startIndex + string.length - 1
+    }
+
+    fun indexOfSmth(row: Int): Int {
+        for (i in matrix[row].indices) if (matrix[row][i] != " ") return i
+        return -1
+    }
+
+    printIntInMatrix(dividend, 0, 1)
+    var div2 = quotientDigits[0] * divisor
+    var div1 = if (div2 != 0) {
+        if (dividend.subInt(div2.length()) < div2) dividend.subInt(div2.length() + 1)
+        else dividend.subInt(div2.length())
+    } else dividend
+    printIntInMatrixByEndIndex(div2, 1, div1.length(), addMinus = true)
+    var remIndex = printInMatrix(
+        "-".repeat(maxOf(div2.length() + 1, div1.length())),
+        2,
+        minOf(indexOfSmth(0), indexOfSmth(1))
+    )
+    var rem = div1 - div2
+    val offset = indexOfSmth(1) + div2.length() - 1
+
+    for (i in 1 until quotient.length()) {
+        printIntInMatrixByEndIndex(rem, 3 * i, remIndex)
+        printIntInMatrixByEndIndex(dividendDigits[i + offset], 3 * i, remIndex + 1)
+        div2 = quotientDigits[i] * divisor
+        div1 = rem * 10 + dividendDigits[i + offset]
+        printIntInMatrixByEndIndex(div2, 3 * i + 1, remIndex + 1, addMinus = true)
+        remIndex = printInMatrix(
+            "-".repeat(maxOf(div2.length() + 1, div1.length())),
+            3 * i + 2,
+            minOf(indexOfSmth(3 * i + 1), indexOfSmth(3 * i))
+        )
+        rem = div1 - div2
+    }
+
+    printIntInMatrixByEndIndex(rem, matrix.size - 1, dividend.length())
+
+    val bw = File(outputName).bufferedWriter()
+
+    var hasUselessSpaces = true
+    matrix.forEach {
+        if (it[0] != " ") {
+            hasUselessSpaces = false
+            return@forEach
+        }
+    }
+
+    matrix.forEachIndexed { index, array ->
+        when (index) {
+            0 -> {
+                for ((i, c) in array.withIndex()) {
+                    if (hasUselessSpaces && i == 0) continue
+                    bw.write(c)
+                }
+                bw.writeln(" | $divisor")
+            }
+            1 -> {
+                for ((i, c) in array.withIndex()) {
+                    if (hasUselessSpaces && i == 0) continue
+                    bw.write(c)
+                }
+                bw.writeln("   $quotient")
+            }
+            else -> {
+                var printedLine = false
+                for ((i, c) in array.withIndex()) {
+                    if (hasUselessSpaces && i == 0) continue
+                    if (printedLine && c == " ") break
+                    if (c != " ") printedLine = true
+                    bw.write(c)
+                }
+                bw.newLine()
+            }
+        }
+    }
+    bw.flush()
+    bw.close()
 }
 
+fun Int.subInt(startIndex: Int, endIndex: Int): Int {
+    val digits = this.digits().reversed()
+    var result = 0
+    for (i in startIndex until endIndex) {
+        result += digits[i]
+        result *= 10
+    }
+    return result / 10
+}
+
+fun Int.subInt(endIndex: Int) = this.subInt(0, endIndex)
+
+fun BufferedWriter.writeln(string: String) {
+    write(string)
+    newLine()
+}

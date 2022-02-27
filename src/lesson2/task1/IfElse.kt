@@ -108,7 +108,7 @@ fun timeForHalfWay(
 /**
  * Простая (2 балла)
  *
- * Нa шахматной доске стоят черный король и две белые ладьи (ладья бьет по горизонтали и вертикали).
+ * На шахматной доске стоят черный король и две белые ладьи (ладья бьет по горизонтали и вертикали).
  * Определить, не находится ли король под боем, а если есть угроза, то от кого именно.
  * Вернуть 0, если угрозы нет, 1, если угроза только от первой ладьи, 2, если только от второй ладьи,
  * и 3, если угроза от обеих ладей.
@@ -164,17 +164,15 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (a < b + c && b < a + c && c < a + b) {
-        val cosA = (sqr(b) + sqr(c) - sqr(a)) / (2 * b * c)
-        val cosB = (sqr(c) + sqr(a) - sqr(b)) / (2 * a * c)
-        val cosC = (sqr(a) + sqr(b) - sqr(c)) / (2 * a * b)
-        return when {
-            cosA < 0 || cosB < 0 || cosC < 0 -> 2
-            sqr(a) == sqr(b) + sqr(c) -> 1
-            else -> 0
-        }
-    }
-    return -1
+    val maxSide = maxOf(a, b, c)
+    val minSide = minOf(a, b, c)
+    val mediumSide = mediumOf(a, b, c)
+    if (maxSide > mediumSide + minSide) return -1
+    // наибольший угол напротив наибольшей стороны
+    // косинус наибольшего угла
+    val cos = (mediumSide * mediumSide + minSide * minSide - maxSide * maxSide) / (2 * mediumSide * minSide)
+    return (-sign(cos) + 1).toInt()
+
 }
 
 /**

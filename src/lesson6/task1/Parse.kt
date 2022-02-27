@@ -2,6 +2,9 @@
 
 package lesson6.task1
 
+import java.lang.IllegalArgumentException
+import java.lang.StringBuilder
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -195,30 +198,37 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun simplification(str: String): String {
-    return str.replace("CM", "DCD").replace("CD", "CCCC")
-        .replace("XC", "LXL").replace("XL", "XXXX")
-        .replace("IX", "VIV").replace("IV", "IIII")
-}
+
+val romanMap = mapOf(
+    "I" to 1,
+    "VI" to 4,
+    "V" to 5,
+    "XI" to 9,
+    "X" to 10,
+    "LX" to 40,
+    "L" to 50,
+    "CX" to 90,
+    "C" to 100,
+    "DC" to 400,
+    "D" to 500,
+    "MC" to 900,
+    "M" to 1000
+)
 
 fun fromRoman(roman: String): Int {
-    var romans = simplification(roman)
-    var result = 0
-    val rom = mutableListOf("M", "D", "C", "L", "X", "V", "I")
-    val num = mutableListOf(1000, 500, 100, 50, 10, 5, 1)
-    val romHash = rom.toHashSet()
-    for (i in romans.indices) {
-        if (!romHash.contains(romans[i].toString())) return -1
-    }
-    for (i in rom.indices) {
-        while (romans.startsWith(rom[i])) {
-            result += num[i]
-            romans = romans.substring(rom[i].length)
+    if (roman == "") return -1
+    val romanNum = StringBuilder(roman.reversed())
+    var num = 0
+    for ((r, n) in romanMap) {
+        while (romanNum.startsWith(r, ignoreCase = false)) {
+            num += n
+            romanNum.delete(0, r.length)
         }
     }
-    return if (result == 0) -1
-    else result
+    return if (romanNum.isNotEmpty()) -1
+    else num
 }
+
 
 /**
  * Очень сложная (7 баллов)
@@ -256,4 +266,5 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
+
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()

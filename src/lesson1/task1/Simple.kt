@@ -2,6 +2,8 @@
 
 package lesson1.task1
 
+import java.lang.ArithmeticException
+import java.lang.IllegalArgumentException
 import kotlin.math.*
 
 // Урок 1: простые функции
@@ -134,8 +136,19 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
 fun numberRevert(number: Int): Int {
-    val number1 = number % 10
-    val number2 = (number / 10) % 10
-    val number3 = number / 100
-    return (number1 * 100) + (number2 * 10) + number3
+    val firstDigit = number / 100
+    val secondDigit = number % 100 / 10
+    val thirdDigit = number % 10
+    return thirdDigit * 100 + secondDigit * 10 + firstDigit
+}
+
+fun lastNameByPhonePrefix(phones: List<String>, prefix: String): List<String> {
+    val result = mutableListOf<String>()
+    val regex = Regex("\\d+\\s[а-яА-Яa-zA-Z]+")
+    phones.forEach { line ->
+        if (!regex.matches(line)) throw IllegalArgumentException()
+        val (phone, name) = line.split(" ")
+        if (phone.startsWith(prefix)) result.add(name)
+    }
+    return result
 }
